@@ -1,0 +1,44 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
+class Team extends Model
+{
+    protected $guarded = [];
+
+    /**
+     * The members that belong to the Team
+     */
+    public function members(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'team_user', 'team_id', 'user_id');
+    }
+
+    /**
+     * Get all of the beneficiaries for the Team
+     */
+    public function beneficiaries(): HasMany
+    {
+        return $this->hasMany(Beneficiary::class);
+    }
+
+    /**
+     * Get all of the beneficiaries for the Team
+     */
+    public function treatments(): HasMany
+    {
+        return $this->hasMany(Treatment::class);
+    }
+
+    /**
+     * Get all of the beneficiaries for the Team
+     */
+    public function workdays(): HasMany
+    {
+        return $this->hasMany(Workday::class);
+    }
+}
