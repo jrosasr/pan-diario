@@ -27,6 +27,6 @@ class Medication extends Model
      */
     public function beneficiaries(): BelongsToMany
     {
-        return $this->belongsToMany(Beneficiary::class, 'beneficiary_treatment', 'treatment_id', 'beneficiary_id');
+        return $this->belongsToMany(Beneficiary::class, 'beneficiary_medication', 'medication_id', 'beneficiary_id');
     }
 }

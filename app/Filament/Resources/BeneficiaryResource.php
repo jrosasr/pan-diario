@@ -6,6 +6,7 @@ use App\Filament\Resources\BeneficiaryResource\Pages;
 use App\Filament\Resources\BeneficiaryResource\RelationManagers;
 use App\Models\Beneficiary;
 use App\Models\Treatment;
+use App\Models\Medication;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -120,6 +121,21 @@ class BeneficiaryResource extends Resource
                     ->createOptionForm([
                         TextInput::make('description')
                             ->label('Nombre del Tratamiento')
+                            ->required(),
+                        TextInput::make('notes')
+                            ->label('Notas'),
+                        Forms\Components\Hidden::make('team_id')  // Campo oculto para almacenar el team_id
+                            ->default(fn () => Filament::getTenant()->id),
+                    ]),
+                Select::make('medication_ids')
+                    ->label('Medicamentos')
+                    ->multiple()
+                    ->preload()
+                    ->relationship('medications', 'description')
+                    ->options(Medication::all()->pluck('description', 'id'))
+                    ->createOptionForm([
+                        TextInput::make('description')
+                            ->label('Nombre del medicamento')
                             ->required(),
                         TextInput::make('notes')
                             ->label('Notas'),
