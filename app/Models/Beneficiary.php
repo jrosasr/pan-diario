@@ -61,6 +61,14 @@ class Beneficiary extends Model
     }
 
     /**
+     * Get the medications that owns the Beneficiary
+     */
+    public function medications()
+    {
+        return $this->belongsToMany(Medication::class, 'beneficiary_medication', 'beneficiary_id', 'medication_id');
+    }
+
+    /**
      * Get the workdays that owns the Beneficiary
      */
     public function workdays()
