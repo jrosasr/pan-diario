@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\TreatmentResource\Pages;
-use App\Filament\Resources\TreatmentResource\RelationManagers;
-use App\Models\Treatment;
+use App\Filament\Resources\DisabilityResource\Pages;
+use App\Filament\Resources\DisabilityResource\RelationManagers;
+use App\Models\Disability;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -14,27 +14,26 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 use Filament\Forms\Components\TextInput;
-
 use Filament\Tables\Columns\TextColumn;
 
-class TreatmentResource extends Resource
+class DisabilityResource extends Resource
 {
-    protected static ?string $model = Treatment::class;
-    protected static ?string $modelLabel = 'Tratamiento';
-    protected static ?string $pluralModelLabel = 'Tratamientos';
+    protected static ?string $model = Disability::class;
+    protected static ?string $modelLabel = 'Discapacidades';
+    protected static ?string $pluralModelLabel = 'Discapacidades';
 
     protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
     protected static ?string $navigationGroup = 'General';
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 5;
 
-    protected static ?string $tenantRelationshipName = 'treatments';
+    protected static ?string $tenantRelationshipName = 'disabilities';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 TextInput::make('description')
-                    ->label('Nombre del Tratamiento')
+                    ->label('Nombre del medicamento')
                     ->required(),
                 TextInput::make('notes')
                     ->label('Notas'),
@@ -72,9 +71,9 @@ class TreatmentResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTreatments::route('/'),
-            'create' => Pages\CreateTreatment::route('/create'),
-            'edit' => Pages\EditTreatment::route('/{record}/edit'),
+            'index' => Pages\ListDisabilities::route('/'),
+            'create' => Pages\CreateDisability::route('/create'),
+            'edit' => Pages\EditDisability::route('/{record}/edit'),
         ];
     }
 }

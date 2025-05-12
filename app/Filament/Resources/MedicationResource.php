@@ -22,7 +22,7 @@ class MedicationResource extends Resource
     protected static ?string $modelLabel = 'Medicamentos';
     protected static ?string $pluralModelLabel = 'Medicamentos';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
     protected static ?string $navigationGroup = 'General';
     protected static ?int $navigationSort = 3;
 

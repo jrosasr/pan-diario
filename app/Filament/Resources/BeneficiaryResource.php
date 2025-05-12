@@ -7,6 +7,7 @@ use App\Filament\Resources\BeneficiaryResource\RelationManagers;
 use App\Models\Beneficiary;
 use App\Models\Treatment;
 use App\Models\Medication;
+use App\Models\Disability;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -46,8 +47,8 @@ class BeneficiaryResource extends Resource
     protected static ?string $modelLabel = 'Beneficiario';
     protected static ?string $pluralModelLabel = 'Beneficiarios';
 
-    protected static ?string $navigationIcon = 'heroicon-o-user';
-    protected static ?string $navigationGroup = 'General';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $navigationGroup = 'Jornadas';
     protected static ?int $navigationSort = 2;
 
     protected static ?string $tenantRelationshipName = 'beneficiaries';
@@ -116,6 +117,21 @@ class BeneficiaryResource extends Resource
                 
                 TextInput::make('phone')->tel()->label('Teléfono de emergencia'),
                 TextInput::make('alt_phone')->tel()->label('Teléfono alternativo'),
+                Select::make('disability_ids')
+                    ->label('Discapacidades')
+                    ->multiple()
+                    ->preload()
+                    ->relationship('disabilities', 'description')
+                    ->options(Disability::all()->pluck('description', 'id'))
+                    ->createOptionForm([
+                        TextInput::make('description')
+                            ->label('Nombre de la discapacidad')
+                            ->required(),
+                        TextInput::make('notes')
+                            ->label('Notas'),
+                        Forms\Components\Hidden::make('team_id')  // Campo oculto para almacenar el team_id
+                            ->default(fn () => Filament::getTenant()->id),
+                    ]),
                 Select::make('treatment_ids')
                     ->label('Tratamientos')
                     ->multiple()

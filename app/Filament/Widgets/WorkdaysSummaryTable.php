@@ -10,6 +10,7 @@ use Filament\Widgets\TableWidget as BaseWidget;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class WorkdaysSummaryTable extends BaseWidget
 {
@@ -21,9 +22,13 @@ class WorkdaysSummaryTable extends BaseWidget
 
     public function table(Table $table): Table
     {
+        // Obtener el equipo (tenant) actual
+        $teamId = Auth::user()->currentTeam()->id;
+
         return $table
             ->query(
                 Workday::query()
+                    ->where('team_id', $teamId)
                     ->withCount([
                         'beneficiaries as male_count' => fn ($query) => $query->where('diner', 'male'),
                         'beneficiaries as female_count' => fn ($query) => $query->where('diner', 'female'),
