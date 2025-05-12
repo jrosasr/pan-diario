@@ -5,33 +5,29 @@
     workdayId: {{ $workdayId }},
     showConfirmationModal: false,
     beneficiaryInfo: null,
-    restartingScanner: false, // Nueva bandera para controlar el reinicio
-    cameraReady: true, // Nuevo estado para controlar la disponibilidad de la cámara
+    restartingScanner: false,
+    cameraReady: true,
+    beneficiaryPhoto: null,
+    isActive: true,
 
-    // Reinicio optimizado
     async cleanUpAndRestart() {
-        // Ocultar modal y limpiar datos
         this.showConfirmationModal = false;
         this.beneficiaryInfo = null;
+        this.beneficiaryPhoto = null;
         this.lastScanned = null;
-        this.cameraReady = false; // Bloquear temporalmente
+        this.cameraReady = false;
         
-        // Detener scanner existente
         await this.stopScan();
         
-        // Limpiar completamente el contenedor
         const qrReader = document.getElementById('qr-reader');
         if (qrReader) qrReader.innerHTML = '';
         
-        // Pequeña pausa para liberar recursos
         await new Promise(resolve => setTimeout(resolve, 300));
         
-        // Restablecer estados y permitir nuevo escaneo
         this.scanner = null;
         this.cameraReady = true;
     },
 
-    // Inicializar scanner
     initScanner() {
         if (this.scanner) return;
         this.scanner = new Html5QrcodeScanner('qr-reader', {
@@ -41,7 +37,6 @@
         });
     },
 
-    // Iniciar escaneo
     async startScan() {
         if (this.isScanning || !this.cameraReady) return;
         
@@ -61,7 +56,6 @@
         }
     },
 
-    // Detener escaneo
     async stopScan() {
         if (!this.scanner || !this.isScanning) return;
         
@@ -73,24 +67,31 @@
         }
     },
 
-    // Manejar código escaneado
-    handleScan(decodedText) {
-        if (this.lastScanned === decodedText) return;
-        this.lastScanned = decodedText;
-        
-        try {
-            const data = JSON.parse(decodedText);
-            if (data.id && data.name && data.dni) {
-                this.stopScan().then(() => {
-                    this.beneficiaryInfo = data;
-                    this.showConfirmationModal = true;
-                });
+    async handleScan(decodedText) {
+            if (this.lastScanned === decodedText) return;
+            this.lastScanned = decodedText;
+            
+            try {
+                const data = JSON.parse(decodedText);
+                if (data.id && data.name && data.dni) {
+                    // Hacer petición para obtener datos completos del beneficiario
+                    this.$wire.call('getBeneficiaryInfo', data.id).then((response) => {
+                        this.stopScan().then(() => {
+                            this.beneficiaryInfo = {
+                                ...data,
+                                ...response, // Agregar los datos adicionales del backend
+                                photoUrl: response.photo ? '/storage/' + response.photo : null,
+                                isActive: response.active // Asumiento que 'active' es el campo booleano
+                            };
+                            this.showConfirmationModal = true;
+                        });
+                    });
+                }
+            } catch (e) {
+                console.error('Error parsing QR:', e);
+                this.lastScanned = null;
             }
-        } catch (e) {
-            console.error('Error parsing QR:', e);
-            this.lastScanned = null;
-        }
-    },
+        },
 
     async confirmAttendance() {
         await this.$wire.call('confirmAttendance', this.beneficiaryInfo.id);
@@ -100,15 +101,13 @@
         setTimeout(() => this.startScan(), 500);
     },
 
-
     cancelAttendance() {
         this.showConfirmationModal = false;
         this.beneficiaryInfo = null;
-        this.$wire.dispatch('notify'); // Notificar a Livewire para reiniciar
+        this.$wire.dispatch('notify');
         setTimeout(() => this.startScan(), 500);
     },
 
-    // Mostrar botón de inicio solo cuando sea apropiado
     shouldShowStartButton() {
         return !this.isScanning && this.cameraReady;
     },
@@ -118,7 +117,6 @@
     <div class="flex flex-col items-center space-y-4">
         <div id="qr-reader" class="w-full max-w-md"></div>
         <div class="flex space-x-4">
-            <!-- Botón de inicio solo visible cuando sea apropiado -->
             <button x-on:click="startScan" x-show="!isScanning"
                 class="px-4 py-2 bg-primary-500 text-white rounded hover:bg-primary-600">
                 Iniciar Escaneo
@@ -140,13 +138,25 @@
                     class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                     <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <div class="sm:flex sm:items-start">
-                            <div
-                                class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 dark:bg-green-700 sm:mx-0 sm:h-10 sm:w-10">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="h-6 w-6 text-green-600 dark:text-green-300" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                                </svg>
+                            <div class="flex flex-col items-center mr-4">
+                                <!-- Foto del beneficiario -->
+                                <template x-if="beneficiaryInfo.photoUrl">
+                                    <img x-bind:src="beneficiaryInfo.photoUrl" 
+                                         class="h-8 w-8 rounded-full object-cover mb-2" 
+                                         alt="Foto del beneficiario" style='width: 200px; height:200px;'>
+                                </template>
+                                <template x-if="!beneficiaryInfo.photoUrl">
+                                    <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center mb-2" style='width: 200px; height:200px;'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" style='width: 200px; height:200px;'>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
+                                    </div>
+                                </template>
+                                <!-- Estado -->
+                                <span x-text="beneficiaryInfo.isActive ? 'Activo' : 'Suspendido'" 
+                                      class="px-2 py-1 text-xs font-semibold rounded-full"
+                                      x-bind:class="beneficiaryInfo.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                                </span>
                             </div>
                             <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                                 <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
@@ -154,6 +164,22 @@
                                     Confirmar Asistencia
                                 </h3>
                                 <div class="mt-2">
+                                    <template x-if="!beneficiaryInfo.isActive">
+                                        <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-4">
+                                            <div class="flex">
+                                                <div class="flex-shrink-0">
+                                                    <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                                    </svg>
+                                                </div>
+                                                <div class="ml-3">
+                                                    <p class="text-sm text-red-700">
+                                                        Este beneficiario está suspendido y no puede marcar asistencia.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
                                     <p class="text-sm text-gray-500 dark:text-gray-400">
                                         ¿Registrar la asistencia de este beneficiario?
                                     </p>
@@ -168,14 +194,16 @@
                         </div>
                     </div>
                     <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                        <button type="button"
-                            class="mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
-                            x-on:click="async () => {
-                                await $wire.call('confirmAttendance', beneficiaryInfo.id);
-                                await cleanUpAndRestart();
-                            }">
-                            Aceptar
-                        </button>
+                        <template x-if="beneficiaryInfo.isActive">
+                            <button type="button"
+                                class="mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
+                                x-on:click="async () => {
+                                    await $wire.call('confirmAttendance', beneficiaryInfo.id);
+                                    await cleanUpAndRestart();
+                                }">
+                                Aceptar
+                            </button>
+                        </template>
                         <button type="button"
                             class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                             x-on:click="cancelAttendance()">
@@ -186,7 +214,6 @@
             </div>
         </div>
     </template>
-
 
     @push('scripts')
         <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>

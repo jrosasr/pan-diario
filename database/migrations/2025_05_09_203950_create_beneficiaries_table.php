@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('alt_phone')->nullable();
             $table->string('diner');
-            $table->boolean('status')->default(true);
+            $table->boolean('active')->default(true);
 
             $table->string('qr_code')->unique()->nullable();
 

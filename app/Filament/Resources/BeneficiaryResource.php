@@ -70,7 +70,6 @@ class BeneficiaryResource extends Resource
                     ->label('Nombre completo')
                     ->disabledOn('edit'),
                 TextInput::make('dni')
-                    ->required()
                     ->unique(ignoreRecord: true)
                     ->maxLength(255)
                     ->label('Documento de Identidad')
@@ -127,7 +126,7 @@ class BeneficiaryResource extends Resource
                         Forms\Components\Hidden::make('team_id')  // Campo oculto para almacenar el team_id
                             ->default(fn () => Filament::getTenant()->id),
                     ]),
-                Toggle::make('status')
+                Toggle::make('active')
                     ->label('Activo')
                     ->default(true)
                     ->onColor('success')
@@ -142,8 +141,8 @@ class BeneficiaryResource extends Resource
                 // TextColumn::make('team.name')->numeric()->sortable()->label('Comedor'),
                 TextColumn::make('full_name')->sortable()->searchable()->label('Nombre Completo'),
                 TextColumn::make('dni')->sortable()->label('Cédula'),
-                IconColumn::make('status')
-                    ->label('Estado')
+                IconColumn::make('active')
+                    ->label('Estatus')
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')

@@ -28,7 +28,7 @@ class Beneficiary extends Model
         'alt_phone',
         'diner',
         'qr_code',
-        'status',
+        'active',
     ];
 
     protected static function booted()

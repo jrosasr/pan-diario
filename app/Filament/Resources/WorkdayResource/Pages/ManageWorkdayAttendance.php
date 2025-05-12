@@ -258,4 +258,14 @@ class ManageWorkdayAttendance extends Page implements HasForms, HasActions
                 ->send();
         }
     }
+
+    public function getBeneficiaryInfo($beneficiaryId)
+    {
+        $beneficiary = Beneficiary::findOrFail($beneficiaryId);
+        
+        return [
+            'active' => $beneficiary->active, // Asumiendo que el campo se llama 'active' en tu modelo
+            'photo' => $beneficiary->photo, // Ruta relativa de la foto
+        ];
+    }
 }
