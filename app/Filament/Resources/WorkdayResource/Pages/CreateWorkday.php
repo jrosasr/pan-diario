@@ -9,4 +9,11 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateWorkday extends CreateRecord
 {
     protected static string $resource = WorkdayResource::class;
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['status'] = 'in-process';
+
+        return $data;
+    }
 }

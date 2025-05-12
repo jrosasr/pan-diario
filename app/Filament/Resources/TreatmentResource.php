@@ -20,10 +20,14 @@ use Filament\Tables\Columns\TextColumn;
 class TreatmentResource extends Resource
 {
     protected static ?string $model = Treatment::class;
-    protected static ?string $tenantRelationshipName = 'treatments';
-    protected static ?string $navigationIcon = 'heroicon-o-inbox-stack';
     protected static ?string $modelLabel = 'Tratamiento';
     protected static ?string $pluralModelLabel = 'Tratamientos';
+
+    protected static ?string $navigationIcon = 'heroicon-o-inbox-stack';
+    protected static ?string $navigationGroup = 'General';
+    protected static ?int $navigationSort = 4;
+
+    protected static ?string $tenantRelationshipName = 'treatments';
 
     public static function form(Form $form): Form
     {
@@ -41,7 +45,7 @@ class TreatmentResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('description')->sortable(),
+                TextColumn::make('description')->sortable()->searchable(),
                 TextColumn::make('notes')->sortable(),
             ])
             ->filters([
@@ -49,6 +53,7 @@ class TreatmentResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->label('Editar'),
+                Tables\Actions\DeleteAction::make()->label('Eliminar'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

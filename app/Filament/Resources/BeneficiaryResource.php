@@ -43,10 +43,14 @@ use Illuminate\Support\Facades\Storage;
 class BeneficiaryResource extends Resource
 {
     protected static ?string $model = Beneficiary::class;
-    protected static ?string $tenantRelationshipName = 'beneficiaries';
-    protected static ?string $navigationIcon = 'heroicon-o-user';
     protected static ?string $modelLabel = 'Beneficiario';
     protected static ?string $pluralModelLabel = 'Beneficiarios';
+
+    protected static ?string $navigationIcon = 'heroicon-o-user';
+    protected static ?string $navigationGroup = 'General';
+    protected static ?int $navigationSort = 2;
+
+    protected static ?string $tenantRelationshipName = 'beneficiaries';
 
     public static function form(Form $form): Form
     {

@@ -22,14 +22,17 @@ use Carbon\Carbon;
 
 use Filament\Tables\Columns\TextColumn;
 
-
 class WorkdayResource extends Resource
 {
     protected static ?string $model = Workday::class;
-    protected static ?string $tenantRelationshipName = 'workdays';
-    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
     protected static ?string $modelLabel = 'Jornada';
     protected static ?string $pluralModelLabel = 'Jornadas';
+
+    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
+    protected static ?string $navigationGroup = 'Jornadas';
+    protected static ?int $navigationSort = 1;
+    
+    protected static ?string $tenantRelationshipName = 'workdays';
 
     public static function form(Form $form): Form
     {
@@ -53,12 +56,13 @@ class WorkdayResource extends Resource
                 ->label('Hora de finalización')
                 ->seconds(false)
                 ->visibleOn('edit')
-                ->disabled(fn (string $operation): bool => $operation === 'edit' && $record?->status === 'finished'),
+                ->disabled(true),
                 
             Select::make('status')
                 ->default('in-process')
                 ->required()
                 ->label('Estatus de la jornada')
+                ->visibleOn('edit')
                 ->options([
                     'in-process' => 'En curso',
                     'finished' => 'Finalizado',
