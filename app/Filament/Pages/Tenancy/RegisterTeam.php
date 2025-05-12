@@ -32,8 +32,6 @@ class RegisterTeam extends RegisterTenant
                     ->image()
                     ->preserveFilenames()
                     ->imagePreviewHeight('150')
-                    ->openable()
-                    ->downloadable()
                     ->default(function ($record) {
                         return $record?->logo ? [asset('storage/'.$record->logo)] : null;
                     }),
