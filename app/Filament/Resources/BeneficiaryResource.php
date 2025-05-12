@@ -90,17 +90,17 @@ class BeneficiaryResource extends Resource
                 Textarea::make('address')->maxLength(255)->label('Dirección')->columnSpan('full'),
                 TextInput::make('weight')->numeric()->inputMode('decimal')->label('Peso'),
                 FileUpload::make('photo')
-                ->label('Foto')
-                ->directory('beneficiaries/photos')
-                ->visibility('public')
-                ->image()
-                ->preserveFilenames()
-                ->imagePreviewHeight('150')
-                ->openable()
-                ->downloadable()
-                ->default(function ($record) {
-                    return $record?->photo ? [asset('storage/'.$record->photo)] : null;
-                }),
+                    ->label('Foto')
+                    ->directory('beneficiaries/photos')
+                    ->visibility('public')
+                    ->image()
+                    ->preserveFilenames()
+                    ->imagePreviewHeight('150')
+                    ->openable()
+                    ->downloadable()
+                    ->default(function ($record) {
+                        return $record?->photo ? [asset('storage/'.$record->photo)] : null;
+                    }),
 
                 FileUpload::make('dni_photo')
                     ->label('Foto DNI')

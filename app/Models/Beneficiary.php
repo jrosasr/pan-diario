@@ -78,7 +78,7 @@ class Beneficiary extends Model
         $qrData = [
             'id' => $this->id,
             'name' => $this->full_name,
-            'dni' => $this->dni,
+            'dni' => $this->dni ?? 'N/A',
             'timestamp' => now()->toDateTimeString()
         ];
 
@@ -100,7 +100,7 @@ class Beneficiary extends Model
         $currentTeam = Auth::user()->currentTeam();
 
         // Ruta del logo
-        $logoPath = public_path('logo.png');
+        $logoPath = $currentTeam->logo ?? public_path('logo.png');
         
         // Crear directorio si no existe
         Storage::disk('public')->makeDirectory('idcards');
