@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('workdays', function (Blueprint $table) {
             $table->id();
 
-            $table->timestamp('started_at', precision: 0);
-            $table->timestamp('ended_at', precision: 0)->nullable();
+            $table->date('started_at');
+            $table->time('start_time_at', precision: 0);
+            $table->time('end_time_at', precision: 0)->nullable();
             $table->enum('status', ['in-process', 'finished'])->default('in-process');
 
             $table->foreignId('team_id')->constrained()->onDelete('cascade');

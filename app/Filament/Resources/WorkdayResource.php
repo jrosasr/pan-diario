@@ -13,9 +13,12 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\View;
+
+use Carbon\Carbon;
 
 use Filament\Tables\Columns\TextColumn;
 
@@ -34,42 +37,62 @@ class WorkdayResource extends Resource
 
         return $form
         ->schema([
-            DateTimePicker::make('started_at')
-                ->label('Fecha de inicio')
+            DatePicker::make('started_at')
+                ->label('Fecha')
                 ->required()
-                ->disabled(fn (string $operation): bool => $operation === 'edit' && $record->status === 'finished'),
+                ->native(false)
+                ->disabledOn('edit'),
                 
-            DateTimePicker::make('ended_at')
-                ->label('Fecha de finalización')
-                ->visibleOn('edit'),
+            TimePicker::make('start_time_at')
+                ->label('Hora de inicio')
+                ->seconds(false)
+                ->required()
+                ->disabledOn('edit'),
+                
+            TimePicker::make('end_time_at')
+                ->label('Hora de finalización')
+                ->seconds(false)
+                ->visibleOn('edit')
+                ->disabled(fn (string $operation): bool => $operation === 'edit' && $record?->status === 'finished'),
                 
             Select::make('status')
-            ->default('in-process')
-            ->required()
-            ->label('Estatus de la jornada')
-            ->options([
-                'in-process' => 'En curso',
-                'finished' => 'Finalizado',
+                ->default('in-process')
+                ->required()
+                ->label('Estatus de la jornada')
+                ->options([
+                    'in-process' => 'En curso',
+                    'finished' => 'Finalizado',
                 ])
-                ->disabled(fn (string $operation): bool => $operation === 'edit' && $record->status === 'finished'),
-                // Mostrar tabla solo cuando la jornada está finalizada
-                View::make('filament.attendance-list')
+                ->disabled(fn (string $operation): bool => $operation === 'edit' && $record?->status === 'finished'),
+                
+            View::make('filament.attendance-list')
                 ->visibleOn('edit')
                 ->viewData([
                     'beneficiaries' => $record->beneficiaries ?? collect(),
                     'readOnly' => $record?->status === 'finished',
                 ]),
-
         ]);
-
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('started_at')->label('Fecha de inicio')->sortable()->searchable(),
-                TextColumn::make('ended_at')->label('Fecha de finalización')->default('N/A')->sortable()->searchable(),
+                TextColumn::make('started_at')
+                    ->label('Fecha')
+                    ->date('d/m/Y')
+                    ->sortable(),
+                        
+                TextColumn::make('start_time_at')
+                    ->label('Hora inicio')
+                    ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('h:i A') : '')
+                    ->sortable(),
+                    
+                TextColumn::make('end_time_at')
+                    ->label('Hora fin')
+                    ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('h:i A') : 'N/A')
+                    ->sortable(),
+                    
                 TextColumn::make('status')
                     ->label('Estatus')
                     ->badge()
@@ -86,7 +109,7 @@ class WorkdayResource extends Resource
             ->filters([
                 //
             ])
-            ->defaultSort('id', 'desc') // Agrega esta línea
+            ->defaultSort('started_at', 'desc')
             ->actions([
                 Tables\Actions\EditAction::make()->label('Editar'),
                 Tables\Actions\Action::make('manageAttendance')
@@ -95,7 +118,6 @@ class WorkdayResource extends Resource
                     ->color('success')
                     ->visible(fn (Workday $record): bool => $record->status === 'in-process')
                     ->url(fn (Workday $record): string => static::getUrl('attendance', ['record' => $record])),
-
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

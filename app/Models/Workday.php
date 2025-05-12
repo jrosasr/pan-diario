@@ -10,9 +10,10 @@ class Workday extends Model
 {
     protected $fillable = [
         'started_at',
-        'ended_at',
-        'status',
+        'start_time_at',
+        'end_time_at',
         'team_id',
+        'status'
     ];
 
     /**

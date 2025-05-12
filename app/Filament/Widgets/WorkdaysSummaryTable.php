@@ -31,7 +31,7 @@ class WorkdaysSummaryTable extends BaseWidget
                         'beneficiaries as girl_count' => fn ($query) => $query->where('diner', 'girl'),
                         'beneficiaries as total_count'
                     ])
-                    ->where('status', 'finished')
+                    // ->where('status', 'finished')
                     ->whereBetween('started_at', [
                         now()->startOfMonth(),
                         now()->endOfMonth()
@@ -39,14 +39,18 @@ class WorkdaysSummaryTable extends BaseWidget
             )
             ->columns([
                 Tables\Columns\TextColumn::make('started_at')
-                    ->label('Fecha de Inicio')
-                    ->dateTime('d/m/Y H:i')
+                    ->label('Fecha')
+                    ->date('d/m/Y')
                     ->sortable(),
                     
-                Tables\Columns\TextColumn::make('ended_at')
-                    ->label('Fecha de Finalización')
-                    ->dateTime('d/m/Y H:i')
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('start_time_at')
+                    ->label('Hora Inicio')
+                    ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('h:i A') : ''),
+                    
+                Tables\Columns\TextColumn::make('end_time_at')
+                    ->label('Hora Fin')
+                    ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('h:i A') : 'N/A'),
+    
                     
                 Tables\Columns\TextColumn::make('male_count')
                     ->label('Hombres')
@@ -94,4 +98,5 @@ class WorkdaysSummaryTable extends BaseWidget
             ])
             ->defaultSort('started_at', 'desc');
     }
+
 }
