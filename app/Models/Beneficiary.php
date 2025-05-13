@@ -73,7 +73,7 @@ class Beneficiary extends Model
      */
     public function disabilities()
     {
-        return $this->belongsToMany(Medication::class, 'beneficiary_disability', 'beneficiary_id', 'disability_id');
+        return $this->belongsToMany(Disability::class, 'beneficiary_disability', 'beneficiary_id', 'disability_id');
     }
 
     /**
@@ -116,8 +116,8 @@ class Beneficiary extends Model
         $currentTeam = Auth::user()->currentTeam();
 
         // Ruta del logo
-        $logoPath = $currentTeam->logo ?? public_path('logo.png');
-        
+        $logoPath = $currentTeam->logo ? Storage::disk('public')->path($currentTeam->logo) : public_path('logo.png');
+
         // Crear directorio si no existe
         Storage::disk('public')->makeDirectory('idcards');
         

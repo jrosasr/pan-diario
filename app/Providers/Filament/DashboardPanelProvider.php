@@ -30,6 +30,10 @@ class DashboardPanelProvider extends PanelProvider
             ->id('dashboard')
             ->path('dashboard')
             ->login()
+            ->registration()
+            ->passwordReset()
+            ->emailVerification()
+            ->profile()
             ->colors([
                 'primary' => Color::Blue,
             ])
@@ -58,7 +62,6 @@ class DashboardPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->tenant(Team::class)
-            ->tenantRegistration(RegisterTeam::class)
-            ->registration();
+            ->tenantRegistration(RegisterTeam::class);
     }
 }

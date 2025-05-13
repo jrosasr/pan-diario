@@ -167,7 +167,7 @@
                             <path d="M16 18h.01" />
                         </svg>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">Gestiónde Jornadas</h3>
+                    <h3 class="text-xl font-semibold mb-2">Gestión de Jornadas</h3>
                     <p class="text-gray-600">Gestión centralizada con historial completo.</p>
                 </div>
 

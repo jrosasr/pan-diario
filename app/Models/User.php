@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasTenants;
@@ -16,7 +17,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Filament\Facades\Filament;
 
-class User extends Authenticatable implements FilamentUser, HasTenants
+class User extends Authenticatable implements FilamentUser, HasTenants, MustVerifyEmail
 {
     use HasFactory, Notifiable;
 
