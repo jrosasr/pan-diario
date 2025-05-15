@@ -1,0 +1,33 @@
+services:
+  elyon_pan_diario:
+    build: . # Construye la imagen desde el Dockerfile en el directorio actual de Laravel
+    ports:
+      - "8050:8000"
+    volumes:
+      - elyon_pan_diario_storage:/app/storage
+    env_file:
+      - .env # El .env del proyecto Laravel
+    depends_on:
+      - elyon-pandiario-postgres # Asegura que la base de datos se inicie primero
+    networks:
+      - elyon-pandiario
+
+  elyon-pandiario-postgres:
+    image: postgres:17
+    restart: always
+    volumes:
+      - prestafacil-db:/var/lib/postgresql/data
+    ports:
+      - "5436:5432"
+    env_file:
+      - .env # Podrías tener un .env para la DB si lo necesitas
+    networks:
+      - elyon-pandiario
+
+volumes:
+  elyon_pan_diario_storage:
+  prestafacil-db:
+
+
+networks:
+  elyon-pandiario:
