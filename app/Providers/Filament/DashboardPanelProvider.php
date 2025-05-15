@@ -32,7 +32,7 @@ class DashboardPanelProvider extends PanelProvider
             ->login()
             ->registration()
             ->passwordReset()
-            ->emailVerification()
+            // ->emailVerification()
             ->profile()
             ->colors([
                 'primary' => Color::Blue,

@@ -29,6 +29,9 @@ class Beneficiary extends Model
         'diner',
         'qr_code',
         'active',
+        'created_at',
+        'updated_at',
+        'team_id'
     ];
 
     protected static function booted()
@@ -130,7 +133,7 @@ class Beneficiary extends Model
         
         // Agregar logo (ajustar tamaño)
         if (file_exists($logoPath)) {
-            $logo = \Intervention\Image\Laravel\Facades\Image::read($logoPath)->scale(175); // Escalar manteniendo aspecto
+            $logo = \Intervention\Image\Laravel\Facades\Image::read($logoPath)->scale(225); // Escalar manteniendo aspecto
             $img->place($logo, 'top-left', 20, 20); // Posicionar logo
         }
         
@@ -140,18 +143,18 @@ class Beneficiary extends Model
             $img->place($qr, 'top-right', 20, 20);
         }
 
-        // Encabezado de la Congregacion
-        $img->text("Comedor", 200, 95, function($font) {
-            $font->file(public_path('fonts/CascadiaMono.ttf'));
-            $font->size(25);
-            $font->color('#333333');
-        });
+        // // Encabezado de la Congregacion
+        // $img->text("Comedor", 200, 95, function($font) {
+        //     $font->file(public_path('fonts/CascadiaMono.ttf'));
+        //     $font->size(25);
+        //     $font->color('#333333');
+        // });
 
-        $img->text($currentTeam->name, 200, 130, function($font) {
-            $font->file(public_path('fonts/CascadiaMono.ttf'));
-            $font->size(25);
-            $font->color('#333333');
-        });
+        // $img->text($currentTeam->name, 200, 130, function($font) {
+        //     $font->file(public_path('fonts/CascadiaMono.ttf'));
+        //     $font->size(25);
+        //     $font->color('#333333');
+        // });
         
         // CORRECCIÓN: Método correcto para agregar texto
         $img->text("Nro: #" . $this->id, 50, 300, function($font) {

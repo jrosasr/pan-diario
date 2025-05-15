@@ -42,6 +42,11 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Validation\Rule;
+use App\Rules\UniqueDniForTeam;
+
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use pxlrbt\FilamentExcel\Columns\Column;
 
 class BeneficiaryResource extends Resource
 {
@@ -84,9 +89,7 @@ class BeneficiaryResource extends Resource
                     ->maxLength(20)
                     ->rules([
                         'required',
-                        Rule::unique('beneficiaries')->ignore($record?->id)->where(function (Builder $query) use ($teamId) {
-                            return $query->where('team_id', $teamId);
-                        }),
+                        new UniqueDniForTeam($record?->id), // Pasa el ID del registro a la regla
                     ])
                     ->disabledOn('edit'),
                 DatePicker::make('birthdate')
@@ -181,6 +184,17 @@ class BeneficiaryResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $diners = [
+            'hombre' => 'male',
+            'mujer' => 'female',
+            'niño' => 'boy',
+            'niña' => 'girl',
+            'male' => 'hombre',
+            'female' => 'mujer',
+            'boy' => 'niño',
+            'girl' => 'niña',
+        ];
+
         return $table
             ->columns([
                 // TextColumn::make('team.name')->numeric()->sortable()->label('Comedor'),
@@ -218,6 +232,25 @@ class BeneficiaryResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()->exports([
+                        ExcelExport::make('table')->fromTable(),
+                        ExcelExport::make('form')->withColumns([
+                            Column::make('full_name')->heading('Nombre completo'),
+                            Column::make('dni')->heading('Cedula'),
+                            Column::make('birthdate')->heading('Fecha de nacimiento'),
+                            Column::make('diner')->heading('Tipo de comensal')
+                                ->formatStateUsing(function ($state) use ($diners) {
+                                    return $diners[$state] ?? '';
+                                }),
+                            Column::make('address')->heading('Dirección'),
+                            Column::make('active')->heading('activo')
+                                ->formatStateUsing(function ($state) {
+                                    return $state ? 'SI' : 'NO';
+                                }),
+                            Column::make('phone')->heading('Telefono'),
+                            Column::make('alt_phone')->heading('Telefono alternativo'),
+                        ]),
+                    ])
                 ]),
             ]);
     }

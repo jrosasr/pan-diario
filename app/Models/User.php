@@ -17,7 +17,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Filament\Facades\Filament;
 
-class User extends Authenticatable implements FilamentUser, HasTenants, MustVerifyEmail
+class User extends Authenticatable implements FilamentUser, HasTenants
 {
     use HasFactory, Notifiable;
 
