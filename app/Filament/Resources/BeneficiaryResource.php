@@ -41,6 +41,8 @@ use Illuminate\Support\Str;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
 
+use Illuminate\Validation\Rule;
+
 class BeneficiaryResource extends Resource
 {
     protected static ?string $model = Beneficiary::class;
@@ -56,6 +58,8 @@ class BeneficiaryResource extends Resource
     public static function form(Form $form): Form
     {
         $record = $form->getRecord();
+
+        $teamId = Auth::user()->currentTeam()->id;
 
         return $form
             ->schema([
@@ -76,9 +80,14 @@ class BeneficiaryResource extends Resource
                     ->label('Nombre completo')
                     ->disabledOn('edit'),
                 TextInput::make('dni')
-                    ->unique(ignoreRecord: true)
-                    ->maxLength(255)
                     ->label('Documento de Identidad')
+                    ->maxLength(20)
+                    ->rules([
+                        'required',
+                        Rule::unique('beneficiaries')->ignore($record?->id)->where(function (Builder $query) use ($teamId) {
+                            return $query->where('team_id', $teamId);
+                        }),
+                    ])
                     ->disabledOn('edit'),
                 DatePicker::make('birthdate')
                     ->required()

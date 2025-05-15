@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->string('full_name');
-            $table->string('dni')->unique()->nullable();
+            $table->string('dni')->nullable();
             $table->string('birthdate')->nullable();
             $table->double('weight')->nullable();
             $table->text('address')->nullable();
@@ -29,6 +29,9 @@ return new class extends Migration
             $table->string('qr_code')->unique()->nullable();
 
             $table->foreignId('team_id')->constrained()->onDelete('cascade');
+
+            // Add unique index for 'dni' and 'team_id' combination
+            $table->unique(['dni', 'team_id']);
 
             $table->timestamps();
         });
