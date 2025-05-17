@@ -11,6 +11,8 @@ use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Filament\Tables\Columns\Summarizers\Sum;
+use Filament\Tables\Columns\Summarizers\Summarizer;
 
 class WorkdaysSummaryTable extends BaseWidget
 {
@@ -39,45 +41,35 @@ class WorkdaysSummaryTable extends BaseWidget
                     // ->where('status', 'finished')
                     ->whereBetween('started_at', [
                         now()->startOfMonth(),
-                        now()->endOfMonth()
+                        now()->endOfMonth(),
                     ])
             )
             ->columns([
                 Tables\Columns\TextColumn::make('started_at')
                     ->label('Fecha')
-                    ->date('d/m/Y')
-                    ->sortable(),
-                    
-                Tables\Columns\TextColumn::make('start_time_at')
-                    ->label('Hora Inicio')
-                    ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('h:i A') : ''),
-                    
-                Tables\Columns\TextColumn::make('end_time_at')
-                    ->label('Hora Fin')
-                    ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('h:i A') : 'N/A'),
-    
-                    
+                    ->date(),
                 Tables\Columns\TextColumn::make('male_count')
                     ->label('Hombres')
-                    ->numeric(),
-                    
+                    ->numeric()
+                    ->summarize(Sum::make()->label('Total Hombres')), // Suma de hombres
                 Tables\Columns\TextColumn::make('female_count')
                     ->label('Mujeres')
-                    ->numeric(),
-                    
+                    ->numeric()
+                    ->summarize(Sum::make()->label('Total Mujeres')), // Suma de mujeres
                 Tables\Columns\TextColumn::make('boy_count')
                     ->label('Niños')
-                    ->numeric(),
-                    
+                    ->numeric()
+                    ->summarize(Sum::make()->label('Total Niños')),   // Suma de niños
                 Tables\Columns\TextColumn::make('girl_count')
                     ->label('Niñas')
-                    ->numeric(),
-                    
+                    ->numeric()
+                    ->summarize(Sum::make()->label('Total Niñas')),   // Suma de niñas
                 Tables\Columns\TextColumn::make('total_count')
                     ->label('Total')
                     ->numeric()
                     ->color('primary')
-                    ->weight('bold'),
+                    ->weight('bold')
+                    ->summarize(Sum::make()->label('Total General')), // Suma total
             ])
             ->filters([
                 Filter::make('date_filter')
@@ -103,5 +95,4 @@ class WorkdaysSummaryTable extends BaseWidget
             ])
             ->defaultSort('started_at', 'desc');
     }
-
 }
