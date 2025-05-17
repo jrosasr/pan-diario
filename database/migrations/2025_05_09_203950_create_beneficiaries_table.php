@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->string('full_name');
+            $table->string('dni_type')->nullable();
             $table->string('dni')->nullable();
             $table->string('birthdate')->nullable();
             $table->double('weight')->nullable();

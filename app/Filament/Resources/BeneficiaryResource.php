@@ -84,6 +84,13 @@ class BeneficiaryResource extends Resource
                     ->maxLength(255)
                     ->label('Nombre completo')
                     ->disabledOn('edit'),
+                Select::make('dni_type')
+                    ->options([
+                        'V' => 'Nacional (V)',
+                        'E' => 'Extranjero (E)',
+                    ])
+                    ->label('Tipo de documento de identidad')
+                    ->disabledOn('edit'),
                 TextInput::make('dni')
                     ->label('Documento de Identidad')
                     ->maxLength(20)
@@ -199,7 +206,15 @@ class BeneficiaryResource extends Resource
             ->columns([
                 // TextColumn::make('team.name')->numeric()->sortable()->label('Comedor'),
                 TextColumn::make('full_name')->sortable()->searchable()->label('Nombre Completo'),
-                TextColumn::make('dni')->sortable()->label('Cédula'),
+                TextColumn::make('dni')
+                    ->label('Documento')
+                    ->formatStateUsing(function (Beneficiary $record) {
+                        return $record->dni_type . '-' . $record->dni;
+                    })
+                    ->sortable()
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->where(DB::raw("CONCAT(dni_type, '-', dni)"), 'like', "%{$search}%");
+                    }),
                 IconColumn::make('active')
                     ->label('Estatus')
                     ->boolean()

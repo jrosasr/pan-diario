@@ -18,6 +18,7 @@ class Beneficiary extends Model
 {
     protected $fillable = [
         'full_name',
+        'dni_type',
         'dni',
         'birthdate',
         'weight',
