@@ -55,13 +55,14 @@ class BeneficiaryImport implements ToModel, WithHeadingRow
 
         $beneficiaryData = [
             'full_name' => $row['nombre_completo'],
+            'dni_type' => $row['tipo_de_cedula'] ?? null,
             'dni' => $row['cedula'],
             'birthdate' => $birthdate,
             'diner' => $diners[strtolower($row['tipo_de_comensal'] ?? 'hombre')],
             'active' => $active,
-            'address' => $row['direccion'] ?? 'N/A',
-            'phone' => $row['telefono'] ?? 'N/A',
-            'alt_phone' => $row['Telefono_alternativo'] ?? 'N/A',
+            'address' => $row['direccion'] ?? null,
+            'phone' => $row['telefono'] ?? null,
+            'alt_phone' => $row['Telefono_alternativo'] ?? null,
             'team_id' => $teamId,
         ];
 

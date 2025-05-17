@@ -248,9 +248,10 @@ class BeneficiaryResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                     ExportBulkAction::make()->exports([
-                        ExcelExport::make('table')->fromTable(),
-                        ExcelExport::make('form')->withColumns([
+                        ExcelExport::make('table')->label('Tabla')->fromTable(),
+                        ExcelExport::make('form')->label('Formulario')->withColumns([
                             Column::make('full_name')->heading('Nombre completo'),
+                            Column::make('dni_type')->heading('Tipo de cedula'),
                             Column::make('dni')->heading('Cedula'),
                             Column::make('birthdate')->heading('Fecha de nacimiento'),
                             Column::make('diner')->heading('Tipo de comensal')
