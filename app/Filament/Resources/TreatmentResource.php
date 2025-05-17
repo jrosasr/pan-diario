@@ -24,7 +24,7 @@ class TreatmentResource extends Resource
     protected static ?string $pluralModelLabel = 'Tratamientos';
 
     protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
-    protected static ?string $navigationGroup = 'General';
+    protected static ?string $navigationGroup = 'Config General';
     protected static ?int $navigationSort = 4;
 
     protected static ?string $tenantRelationshipName = 'treatments';

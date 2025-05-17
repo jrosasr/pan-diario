@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
 
+use Illuminate\Support\Facades\Auth;
+
 class DisabilityResource extends Resource
 {
     protected static ?string $model = Disability::class;
@@ -23,7 +25,7 @@ class DisabilityResource extends Resource
     protected static ?string $pluralModelLabel = 'Discapacidades';
 
     protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
-    protected static ?string $navigationGroup = 'General';
+    protected static ?string $navigationGroup = 'Config General';
     protected static ?int $navigationSort = 5;
 
     protected static ?string $tenantRelationshipName = 'disabilities';
@@ -33,10 +35,14 @@ class DisabilityResource extends Resource
         return $form
             ->schema([
                 TextInput::make('description')
-                    ->label('Nombre del medicamento')
+                    ->label('Nombre de la discapacidad')
                     ->required(),
                 TextInput::make('notes')
                     ->label('Notas'),
+                Forms\Components\Hidden::make('team_id')  // Campo oculto para almacenar el team_id
+                    ->default(function () {
+                        return Auth::user()->currentTeam()->id;
+                    }),
             ]);
     }
 

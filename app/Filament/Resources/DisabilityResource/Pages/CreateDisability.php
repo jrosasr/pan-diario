@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateDisability extends CreateRecord
 {
     protected static string $resource = DisabilityResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

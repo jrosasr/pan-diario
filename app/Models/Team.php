@@ -35,6 +35,22 @@ class Team extends Model
     }
 
     /**
+     * Get all of the medications for the Team
+     */
+    public function medications(): HasMany
+    {
+        return $this->hasMany(Medication::class);
+    }
+
+    /**
+     * Get all of the disabilities for the Team
+     */
+    public function disabilities(): HasMany
+    {
+        return $this->hasMany(Disability::class);
+    }
+
+    /**
      * Get all of the beneficiaries for the Team
      */
     public function workdays(): HasMany
