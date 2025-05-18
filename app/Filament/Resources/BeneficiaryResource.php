@@ -89,20 +89,16 @@ class BeneficiaryResource extends Resource
                         'V' => 'Nacional (V)',
                         'E' => 'Extranjero (E)',
                     ])
-                    ->label('Tipo de documento de identidad')
-                    ->disabledOn('edit'),
+                    ->label('Tipo de documento de identidad'),
                 TextInput::make('dni')
                     ->label('Documento de Identidad')
                     ->maxLength(20)
                     ->rules([
-                        'required',
                         new UniqueDniForTeam($record?->id), // Pasa el ID del registro a la regla
-                    ])
-                    ->disabledOn('edit'),
+                    ]),
                 DatePicker::make('birthdate')
                     ->required()
-                    ->label('Fecha de nacimiento')
-                    ->disabledOn('edit'),
+                    ->label('Fecha de nacimiento'),
                 Select::make('diner')
                     ->options([
                         'male' => 'Hombre',
