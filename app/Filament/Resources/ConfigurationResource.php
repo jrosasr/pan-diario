@@ -23,9 +23,9 @@ class ConfigurationResource extends Resource
     protected static ?string $modelLabel = 'Configuración';
     protected static ?string $pluralModelLabel = 'Configuración';
 
-    protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
+    protected static ?string $navigationIcon = 'heroicon-o-adjustments-horizontal';
     protected static ?string $navigationGroup = 'Config General';
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {

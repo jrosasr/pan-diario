@@ -22,9 +22,9 @@ class MedicationResource extends Resource
     protected static ?string $modelLabel = 'Medicamentos';
     protected static ?string $pluralModelLabel = 'Medicamentos';
 
-    protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
+    protected static ?string $navigationIcon = 'heroicon-o-tag';
     protected static ?string $navigationGroup = 'Config General';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 6;
 
     protected static ?string $tenantRelationshipName = 'medications';
 

@@ -24,7 +24,7 @@ class DisabilityResource extends Resource
     protected static ?string $modelLabel = 'Discapacidades';
     protected static ?string $pluralModelLabel = 'Discapacidades';
 
-    protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
+    protected static ?string $navigationIcon = 'heroicon-o-tag';
     protected static ?string $navigationGroup = 'Config General';
     protected static ?int $navigationSort = 5;
 
