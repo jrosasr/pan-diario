@@ -4,6 +4,7 @@ namespace App\Filament\Resources\WorkdayResource\Pages;
 
 use App\Filament\Resources\WorkdayResource;
 use App\Models\Beneficiary;
+use App\Models\Configuration;
 use App\Models\Workday;
 use Filament\Actions;
 use Filament\Resources\Pages\Page;
@@ -20,6 +21,8 @@ use Filament\Actions\Contracts\HasActions; // Import the interface
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Exceptions\Halt;
+
+use Illuminate\Support\Facades\Auth;
 
 class ManageWorkdayAttendance extends Page implements HasForms, HasActions
 {
@@ -181,13 +184,16 @@ class ManageWorkdayAttendance extends Page implements HasForms, HasActions
         try {
             $beneficiary = Beneficiary::findOrFail($beneficiaryId);
 
+            // Obtener la configuración del equipo
+            $config = Auth::user()->currentTeam()->configuration;
+
             // Verifica si ya existe la relación
-            $exists = $this->record->beneficiaries()
-            ->where('beneficiary_id', $beneficiaryId)
-            ->exists();
+            $alreadyRegistered = $this->record->beneficiaries()
+                ->where('beneficiary_id', $beneficiaryId)
+                ->exists();
 
             // Verificar si ya está registrado
-            if ($exists) {
+            if ($alreadyRegistered && !$config->multiple_beneficiaries_for_workday) {
                 Notification::make()
                     ->title('Beneficiario ya registrado')
                     ->body("{$beneficiary->full_name} ya está registrado en esta jornada")
