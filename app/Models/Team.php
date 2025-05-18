@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Team extends Model
@@ -56,5 +57,13 @@ class Team extends Model
     public function workdays(): HasMany
     {
         return $this->hasMany(Workday::class);
+    }
+
+    /**
+     * Get configuration of the Team
+     */
+    public function configuration(): HasOne
+    {
+        return $this->hasOne(Configuration::class);
     }
 }

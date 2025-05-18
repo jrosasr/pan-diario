@@ -16,30 +16,39 @@
         this.beneficiaryPhoto = null;
         this.lastScanned = null;
         this.cameraReady = false;
-        
+
         await this.stopScan();
-        
+
         const qrReader = document.getElementById('qr-reader');
         if (qrReader) qrReader.innerHTML = '';
-        
+
         await new Promise(resolve => setTimeout(resolve, 300));
-        
+
         this.scanner = null;
         this.cameraReady = true;
     },
 
     initScanner() {
         if (this.scanner) return;
-        this.scanner = new Html5QrcodeScanner('qr-reader', {
-            qrbox: 250,
+
+        // Configuración mejorada para móviles
+        const config = {
+            qrbox: {
+                width: 250,
+                height: 250
+            },
             fps: 10,
-            rememberLastUsedCamera: true
-        });
+            rememberLastUsedCamera: true,
+            supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
+            facingMode: 'environment' // Usar cámara trasera en móviles
+        };
+
+        this.scanner = new Html5QrcodeScanner('qr-reader', config, /* verbose= */ false);
     },
 
     async startScan() {
         if (this.isScanning || !this.cameraReady) return;
-        
+
         try {
             this.initScanner();
             await this.scanner.render(
@@ -58,7 +67,7 @@
 
     async stopScan() {
         if (!this.scanner || !this.isScanning) return;
-        
+
         try {
             await this.scanner.clear();
             this.isScanning = false;
@@ -68,30 +77,30 @@
     },
 
     async handleScan(decodedText) {
-            if (this.lastScanned === decodedText) return;
-            this.lastScanned = decodedText;
-            
-            try {
-                const data = JSON.parse(decodedText);
-                if (data.id && data.name && data.dni) {
-                    // Hacer petición para obtener datos completos del beneficiario
-                    this.$wire.call('getBeneficiaryInfo', data.id).then((response) => {
-                        this.stopScan().then(() => {
-                            this.beneficiaryInfo = {
-                                ...data,
-                                ...response, // Agregar los datos adicionales del backend
-                                photoUrl: response.photo ? '/storage/' + response.photo : null,
-                                isActive: response.active // Asumiento que 'active' es el campo booleano
-                            };
-                            this.showConfirmationModal = true;
-                        });
+        if (this.lastScanned === decodedText) return;
+        this.lastScanned = decodedText;
+
+        try {
+            const data = JSON.parse(decodedText);
+            if (data.id && data.name && data.dni) {
+                // Hacer petición para obtener datos completos del beneficiario
+                this.$wire.call('getBeneficiaryInfo', data.id).then((response) => {
+                    this.stopScan().then(() => {
+                        this.beneficiaryInfo = {
+                            ...data,
+                            ...response, // Agregar los datos adicionales del backend
+                            photoUrl: response.photo ? '/storage/' + response.photo : null,
+                            isActive: response.active // Asumiento que 'active' es el campo booleano
+                        };
+                        this.showConfirmationModal = true;
                     });
-                }
-            } catch (e) {
-                console.error('Error parsing QR:', e);
-                this.lastScanned = null;
+                });
             }
-        },
+        } catch (e) {
+            console.error('Error parsing QR:', e);
+            this.lastScanned = null;
+        }
+    },
 
     async confirmAttendance() {
         await this.$wire.call('confirmAttendance', this.beneficiaryInfo.id);
@@ -111,11 +120,9 @@
     shouldShowStartButton() {
         return !this.isScanning && this.cameraReady;
     },
-}"
-    x-on:notify.window="startScan()"
-    x-on:reset-scanner.window="cleanUpAndRestart()">
+}" x-on:notify.window="startScan()" x-on:reset-scanner.window="cleanUpAndRestart()">
     <div class="flex flex-col items-center space-y-4">
-        <div id="qr-reader" class="w-full max-w-md"></div>
+        <div id="qr-reader" class="w-full max-w-md" style="min-height: 300px;"></div>
         <div class="flex space-x-4">
             <button x-on:click="startScan" x-show="!isScanning"
                 class="px-4 py-2 bg-primary-500 text-white rounded hover:bg-primary-600">
@@ -141,21 +148,25 @@
                             <div class="flex flex-col items-center mr-4">
                                 <!-- Foto del beneficiario -->
                                 <template x-if="beneficiaryInfo.photoUrl">
-                                    <img x-bind:src="beneficiaryInfo.photoUrl" 
-                                         class="h-8 w-8 rounded-full object-cover mb-2" 
-                                         alt="Foto del beneficiario" style='width: 200px; height:200px;'>
+                                    <img x-bind:src="beneficiaryInfo.photoUrl"
+                                        class="h-8 w-8 rounded-full object-cover mb-2" alt="Foto del beneficiario"
+                                        style='width: 200px; height:200px;'>
                                 </template>
                                 <template x-if="!beneficiaryInfo.photoUrl">
-                                    <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center mb-2" style='width: 200px; height:200px;'>
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" style='width: 200px; height:200px;'>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center mb-2"
+                                        style='width: 200px; height:200px;'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                            style='width: 200px; height:200px;'>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                         </svg>
                                     </div>
                                 </template>
                                 <!-- Estado -->
-                                <span x-text="beneficiaryInfo.isActive ? 'Activo' : 'Suspendido'" 
-                                      class="px-2 py-1 text-xs font-semibold rounded-full"
-                                      x-bind:class="beneficiaryInfo.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                                <span x-text="beneficiaryInfo.isActive ? 'Activo' : 'Suspendido'"
+                                    class="px-2 py-1 text-xs font-semibold rounded-full"
+                                    x-bind:class="beneficiaryInfo.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
                                 </span>
                             </div>
                             <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
@@ -168,8 +179,11 @@
                                         <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-4">
                                             <div class="flex">
                                                 <div class="flex-shrink-0">
-                                                    <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                                    <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd"
+                                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                                            clip-rule="evenodd" />
                                                     </svg>
                                                 </div>
                                                 <div class="ml-3">
@@ -215,7 +229,29 @@
         </div>
     </template>
 
+    <style>
+        @media (max-width: 640px) {
+            #qr-reader {
+                width: 100vw !important;
+                margin-left: -1rem;
+                margin-right: -1rem;
+            }
+
+            #qr-reader img {
+                max-height: 60vh !important;
+            }
+        }
+    </style>
+
     @push('scripts')
-        <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+        <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+        <script>
+            // Verificar compatibilidad al cargar
+            document.addEventListener('DOMContentLoaded', function() {
+                if (!Html5QrcodeScanner.isSupported()) {
+                    alert('Tu navegador no soporta el escaneo de QR. Prueba con Chrome o Firefox.');
+                }
+            });
+        </script>
     @endpush
 </div>

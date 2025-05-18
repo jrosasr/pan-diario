@@ -44,6 +44,11 @@ class RegisterTeam extends RegisterTenant
 
         $team->members()->attach(auth()->user());
 
+        // Create configuration for the team
+        $team->configuration()->create([
+            'multiple_beneficiaries_for_workday' => false,
+        ]);
+
         return $team;
     }
 }
