@@ -92,7 +92,7 @@ class BeneficiaryBirthdayCalendar extends FullCalendarWidget
                         <strong>${event.title}</strong>
                     </div>
                     <div class="text-sm space-y-1">
-                        <p><span class="font-medium">DNI:</span> ${event.extendedProps.dni || 'N/A'}</p>
+                        <p><span class="font-medium">DNI:</span> ${event.extendedProps.dni_type || ''} ${event.extendedProps.dni || 'N/A'}</p>
                         <p><span class="font-medium">Teléfono:</span> ${event.extendedProps.phone || 'N/A'}</p>
                         <p><span class="font-medium">Dirección:</span> ${event.extendedProps.address || 'N/A'}</p>
                     </div>
