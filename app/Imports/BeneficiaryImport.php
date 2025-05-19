@@ -67,7 +67,7 @@ class BeneficiaryImport implements ToModel, WithHeadingRow
         ];
 
         $beneficiary = Beneficiary::updateOrCreate(
-            ['dni' => $row['cedula'], 'team_id' => $teamId],
+            ['dni' => $row['cedula'], 'team_id' => $teamId, 'full_name' => $row['nombre_completo']],
             $beneficiaryData
         );
 
