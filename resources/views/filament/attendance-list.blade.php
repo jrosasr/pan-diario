@@ -15,28 +15,28 @@
         <x-filament-tables::container class="mt-4">
             <x-filament-tables::table>
                 <x-slot name="header">
-                    <x-filament-tables::header-cell>
-                        Beneficiario
-                    </x-filament-tables::header-cell>
                     @if (!$readOnly)
                         <x-filament-tables::header-cell width="10%">
                             Acciones
                         </x-filament-tables::header-cell>
                     @endif
+                    <x-filament-tables::header-cell>
+                        Beneficiario
+                    </x-filament-tables::header-cell>
                 </x-slot>
 
                 @foreach ($beneficiaries as $beneficiary)
                     <x-filament-tables::row>
-                        <x-filament-tables::cell class="text-sm">
-                            {{ $beneficiary->full_name }}({{ $beneficiary->dni }})
-                        </x-filament-tables::cell>
-
                         @if (!$readOnly)
                             <x-filament-tables::cell class="text-right">
                                 <x-filament::button wire:click="removeAttendance({{ $beneficiary->id }})" size="sm"
                                     color="danger" icon="heroicon-o-trash" tooltip="Eliminar asistencia" />
                             </x-filament-tables::cell>
                         @endif
+                        <x-filament-tables::cell class="text-sm">
+                            {{ $beneficiary->full_name }}({{ $beneficiary->dni }})
+                        </x-filament-tables::cell>
+
                     </x-filament-tables::row>
                 @endforeach
             </x-filament-tables::table>
