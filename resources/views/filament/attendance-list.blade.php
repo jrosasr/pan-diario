@@ -15,14 +15,8 @@
         <x-filament-tables::container class="mt-4">
             <x-filament-tables::table>
                 <x-slot name="header">
-                    <x-filament-tables::header-cell width="10%">
-                        Nro
-                    </x-filament-tables::header-cell>
                     <x-filament-tables::header-cell>
                         Nombre
-                    </x-filament-tables::header-cell>
-                    <x-filament-tables::header-cell width="20%">
-                        DNI
                     </x-filament-tables::header-cell>
                     @if (!$readOnly)
                         <x-filament-tables::header-cell width="10%">
