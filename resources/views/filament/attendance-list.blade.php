@@ -16,7 +16,7 @@
             <x-filament-tables::table>
                 <x-slot name="header">
                     <x-filament-tables::header-cell>
-                        Nombre
+                        Beneficiario
                     </x-filament-tables::header-cell>
                     @if (!$readOnly)
                         <x-filament-tables::header-cell width="10%">
