@@ -32,7 +32,7 @@ return new class extends Migration
             $table->foreignId('team_id')->constrained()->onDelete('cascade');
 
             // Add unique index for 'dni' and 'team_id' combination
-            $table->unique(['dni', 'team_id']);
+            $table->unique(['dni', 'team_id', 'full_name']);
 
             $table->timestamps();
         });

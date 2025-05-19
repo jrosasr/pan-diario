@@ -35,6 +35,11 @@ class Beneficiary extends Model
         'team_id'
     ];
 
+    protected $casts = [
+        'birthdate' => 'date', // Esto convertirá automáticamente el string a objeto Carbon
+        'active' => 'boolean',
+    ];
+
     protected static function booted()
     {
         static::created(function ($model) {
