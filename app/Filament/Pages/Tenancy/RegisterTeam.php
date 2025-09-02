@@ -12,7 +12,7 @@ class RegisterTeam extends RegisterTenant
 {
     public static function getLabel(): string
     {
-        return 'Registrar Comedor';
+        return 'Registrar Org.';
     }
 
     public function form(Form $form): Form
@@ -20,7 +20,7 @@ class RegisterTeam extends RegisterTenant
         return $form
             ->schema([
                 TextInput::make('name')
-                    ->label('Nombre del comedor')
+                    ->label('Nombre de la organización')
                     ->required()
                     ->maxLength(25),
                 TextInput::make('address')->label('Dirección')->maxLength(60),

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pan Diario - Gestión de Comedores Sociales</title>
+    <title>Pan Diario - Gestión de Organizaciones Sociales</title>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -79,18 +79,18 @@
                             @else
                                 <a href="{{ url('/dashboard/new') }}"
                                     class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
-                                    Registrar Comedor
+                                    Registrar Org.
                                 </a>
                             @endif
                         @else
                             <a href="{{ route('filament.dashboard.auth.login') }}"
-                                class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal">
+                                class="inline-block px-5 py-1.5 text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal">
                                 Iniciar sesión
                             </a>
 
                             @if (Route::has('register'))
                                 <a href="{{ route('filament.dashboard.auth.register') }}"
-                                    class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
+                                    class="inline-block px-5 py-1.5 border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
                                     Registrarse
                                 </a>
                             @endif
@@ -107,7 +107,7 @@
             <div class="flex flex-col md:flex-row items-center">
                 <div class="md:w-1/2 mb-10 md:mb-0">
                     <h1 class="text-5xl font-bold mb-6 leading-tight">
-                        Gestión inteligente para comedores sociales
+                        Gestión inteligente para organizaciones sociales
                     </h1>
                     <p class="text-xl mb-8 text-gray-200">
                         Solución gratuita para iglesias y organizaciones benéficas.
@@ -238,7 +238,7 @@
     <section class="py-20 hero-bg text-white text-center" data-aos="zoom-in">
         <div class="max-w-4xl mx-auto px-4">
             <h2 class="text-4xl font-bold mb-6">Únete hoy mismo sin coste</h2>
-            <p class="text-xl mb-9">Optimiza la gestión de tu comedor social hoy mismo</p>
+            <p class="text-xl mb-9">Optimiza la gestión de tu organización social hoy mismo</p>
             <a href="{{ route('filament.dashboard.auth.register') }}"
                 class="bg-white text-[var(--azul-rey)] px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition transform hover:scale-105">
                 Registrarse Gratis

@@ -55,7 +55,7 @@ class BeneficiaryResource extends Resource
     protected static ?string $pluralModelLabel = 'Beneficiarios';
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationGroup = 'Jornadas';
+    protected static ?string $navigationGroup = 'Jornadas de alimentación';
     protected static ?int $navigationSort = 2;
 
     protected static ?string $tenantRelationshipName = 'beneficiaries';
@@ -200,7 +200,6 @@ class BeneficiaryResource extends Resource
 
         return $table
             ->columns([
-                // TextColumn::make('team.name')->numeric()->sortable()->label('Comedor'),
                 TextColumn::make('full_name')->sortable()->searchable()->label('Nombre Completo'),
                 TextColumn::make('dni')
                     ->label('Documento')

@@ -29,9 +29,9 @@ class WorkdayResource extends Resource
     protected static ?string $pluralModelLabel = 'Jornadas';
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
-    protected static ?string $navigationGroup = 'Jornadas';
+    protected static ?string $navigationGroup = 'Jornadas de alimentación';
     protected static ?int $navigationSort = 1;
-    
+
     protected static ?string $tenantRelationshipName = 'workdays';
 
     public static function form(Form $form): Form

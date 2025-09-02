@@ -66,4 +66,9 @@ class Team extends Model
     {
         return $this->hasOne(Configuration::class);
     }
+
+    public function resources(): HasMany
+    {
+        return $this->hasMany(Resource::class);
+    }
 }
