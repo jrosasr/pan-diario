@@ -29,16 +29,21 @@ class ChurchResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Iglesia')
                     ->required()
                     ->maxLength(100),
                 Forms\Components\TextInput::make('pastor_name')
+                    ->label('Pastor')
                     ->maxLength(100),
                 Forms\Components\TextInput::make('identification_number')
+                    ->label('Cédula')
                     ->maxLength(100),
                 Forms\Components\TextInput::make('phone_number')
+                    ->label('Teléfono')
                     ->tel()
                     ->maxLength(20),
                 Forms\Components\Textarea::make('address')
+                    ->label('Dirección')
                     ->maxLength(200),
             ]);
     }

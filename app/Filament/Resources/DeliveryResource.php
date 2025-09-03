@@ -81,7 +81,6 @@ class DeliveryResource extends Resource
                     ->label('Fecha de creación')
                     ->dateTime('d/m/Y')
                     ->sortable(),
-                // delivered_at
                 Tables\Columns\TextColumn::make('delivered_at')
                     ->label('Fecha de entrega')
                     ->dateTime('d/m/Y H:i')

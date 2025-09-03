@@ -17,7 +17,9 @@ class EditDelivery extends EditRecord
     protected function getHeaderActions(): array
     {
         if ($this->record->delivered) {
-            return [];
+            return [
+                Actions\DeleteAction::make(),
+            ];
         }
 
         return [
@@ -79,6 +81,7 @@ class EditDelivery extends EditRecord
 
                     return $this->getResource()::getUrl('edit', ['record' => $this->record->getKey()]);
                 }),
+            Actions\DeleteAction::make(),
         ];
     }
 
