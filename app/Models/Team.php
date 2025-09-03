@@ -71,4 +71,14 @@ class Team extends Model
     {
         return $this->hasMany(Resource::class);
     }
+
+    public function churches(): HasMany
+    {
+        return $this->hasMany(Church::class);
+    }
+
+    public function deliveries(): HasMany
+    {
+        return $this->hasMany(Delivery::class);
+    }
 }

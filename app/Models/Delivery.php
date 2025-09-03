@@ -4,16 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Resource extends Model
+class Delivery extends Model
 {
     protected $fillable = [
-        'name',
-        'type',
-        'description',
-        'quantity',
-        'expiration_date',
-        'unit_of_measure',
         'team_id',
+        'church_id',
+        'notes',
+        'delivered',
     ];
 
     public function team()
@@ -21,13 +18,19 @@ class Resource extends Model
         return $this->belongsTo(Team::class);
     }
 
-    public function deliveries()
+    public function church()
     {
-        return $this->belongsToMany(Delivery::class, 'delivery_resource')
+        return $this->belongsTo(Church::class);
+    }
+
+    public function resources()
+    {
+        return $this->belongsToMany(Resource::class, 'delivery_resource')
             ->withPivot('quantity')
             ->withTimestamps();
     }
 
+    // Relación para el Repeater en Filament
     public function deliveryResources()
     {
         return $this->hasMany(DeliveryResource::class);

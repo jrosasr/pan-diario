@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
+use App\Http\Controllers\DeliveryPdfController;
+
 use App\Models\Beneficiary;
 use Illuminate\Support\Facades\Storage;
 
@@ -21,5 +23,8 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
+
+Route::get('/delivery/{id}/pdf', [DeliveryPdfController::class, 'generate'])->name('delivery.pdf');
+Route::get('/delivery/{id}/pdf/view', [DeliveryPdfController::class, 'view'])->name('delivery.pdf.view');
 
 require __DIR__.'/auth.php';
