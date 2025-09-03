@@ -18,7 +18,7 @@ class EditDelivery extends EditRecord
     {
         if ($this->record->delivered) {
             return [
-                Actions\DeleteAction::make(),
+                // Actions\DeleteAction::make(),
             ];
         }
 
@@ -81,7 +81,7 @@ class EditDelivery extends EditRecord
 
                     return $this->getResource()::getUrl('edit', ['record' => $this->record->getKey()]);
                 }),
-            Actions\DeleteAction::make(),
+            // Actions\DeleteAction::make(),
         ];
     }
 
