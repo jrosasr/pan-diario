@@ -65,6 +65,7 @@ class EditDelivery extends EditRecord
                     }
                     $this->record->update([
                         'delivered' => true,
+                        'delivered_at' => now(),
                         'signature_beneficiary' => $beneficiaryPath,
                         'signature_deliverer' => $delivererPath,
                         'deliverer_name' => $data['deliverer_name'],
@@ -81,4 +82,31 @@ class EditDelivery extends EditRecord
         ];
     }
 
+    protected array $originalDeliveryResources = [];
+
+    protected function beforeSave(): void
+    {
+        // Guardar los deliveryResources originales antes de la edición
+        $this->originalDeliveryResources = $this->record->deliveryResources()->get()->mapWithKeys(function ($deliveryResource) {
+            return [$deliveryResource->resource_id => $deliveryResource->quantity];
+        })->toArray();
+    }
+
+    protected function afterSave(): void
+    {
+        // Restaurar inventario sumando las cantidades originales
+        foreach ($this->originalDeliveryResources as $resourceId => $originalQty) {
+            $resource = \App\Models\Resource::find($resourceId);
+            if ($resource && $originalQty) {
+                $resource->increment('quantity', $originalQty);
+            }
+        }
+        // Descontar la nueva cantidad
+        foreach ($this->record->deliveryResources as $deliveryResource) {
+            $resource = $deliveryResource->resource;
+            if ($resource && $deliveryResource->quantity) {
+                $resource->decrement('quantity', $deliveryResource->quantity);
+            }
+        }
+    }
 }

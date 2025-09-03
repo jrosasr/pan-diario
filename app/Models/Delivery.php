@@ -16,6 +16,7 @@ class Delivery extends Model
         'signature_deliverer',
         'deliverer_name',
         'deliverer_dni',
+        'delivered_at'
     ];
 
     public function team()

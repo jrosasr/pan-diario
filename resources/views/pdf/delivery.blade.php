@@ -240,6 +240,7 @@
                     <p>______________________________</p>
                 @endif
                 <p style="margin-top:5px;">{{ $delivery->deliverer_name }}</p>
+                <p style="margin-top:5px;">{{ $delivery->deliverer_dni }}</p>
         </div>
         <div class="single-box sign-box-2">
             <p>Firma del receptor:</p>
