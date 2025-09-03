@@ -42,7 +42,7 @@ class DeliveryResource extends Resource
                 ->searchable()
                 ->preload()
                 ->disabled(fn ($record) => $record && $record->delivered)
-                ->helperText('Puede seleccionar un beneficiario.'),
+                ->helperText('Puede seleccionar un beneficiario, una iglesia o ambos.'),
             Forms\Components\Textarea::make('notes')
                     ->label('Notas')
                     ->disabled(fn ($record) => $record && $record->delivered)
@@ -94,12 +94,14 @@ class DeliveryResource extends Resource
                     ->label('Descargar PDF')
                     ->icon('heroicon-o-document')
                     ->url(fn ($record) => route('delivery.pdf', $record->id))
-                    ->openUrlInNewTab(),
+                    ->openUrlInNewTab()
+                    ->visible(fn ($record) => $record->delivered),
                 Tables\Actions\Action::make('view_pdf')
                     ->label('Ver PDF')
                     ->icon('heroicon-o-eye')
                     ->url(fn ($record) => route('delivery.pdf.view', $record->id))
-                    ->openUrlInNewTab(),
+                    ->openUrlInNewTab()
+                    ->visible(fn ($record) => $record->delivered),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

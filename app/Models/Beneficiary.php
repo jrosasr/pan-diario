@@ -121,7 +121,7 @@ class Beneficiary extends Model
     }
 
     public function generateIdCard()
-    {        
+    {
         $currentTeam = Auth::user()->currentTeam();
 
         // Ruta del logo
@@ -129,20 +129,20 @@ class Beneficiary extends Model
 
         // Crear directorio si no existe
         Storage::disk('public')->makeDirectory('idcards');
-        
+
         // Tamaño del carnet (horizontal - ejemplo: 850x540 px)
         $width = 850;
         $height = 540;
-        
+
         // Crear imagen base (blanco)
         $img = \Intervention\Image\Laravel\Facades\Image::create($width, $height)->fill('#ffffff');
-        
+
         // Agregar logo (ajustar tamaño)
         if (file_exists($logoPath)) {
             $logo = \Intervention\Image\Laravel\Facades\Image::read($logoPath)->scale(225); // Escalar manteniendo aspecto
             $img->place($logo, 'top-left', 20, 20); // Posicionar logo
         }
-        
+
         // Agregar QR code
         if ($this->qr_code && Storage::disk('public')->exists($this->qr_code)) {
             $qr = \Intervention\Image\Laravel\Facades\Image::read(storage_path('app/public/' . $this->qr_code))->scale(250);

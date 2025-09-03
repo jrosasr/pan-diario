@@ -35,7 +35,7 @@
             height: 75px;
             object-fit: cover;
             border-radius: 20px;
-            border: 2px solid #222;
+            border: 1px solid #8f8f8f;
             margin-right: 20px;
         }
 
@@ -133,6 +133,43 @@
             width: 80px;
             /* background-color: #33ff57; */
         }
+
+
+        /* Firmas */
+        .sign-box {
+            width: 95%; /* Ocupa el 95% del ancho del documento */
+            margin-left: auto;
+            margin-right: auto;
+            /* Equivalente a margin: 0 auto; */
+
+            /* Agrega aquí las propiedades de maquetación que ya funcionan */
+            overflow: hidden; /* Limpia los floats */
+        }
+
+        .sign-box::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        .sign-box .single-box {
+            height: 300px;
+            /* Altura para el ejemplo */
+            float: left;
+            /* La clave: coloca el elemento a la izquierda */
+        }
+
+        .sign-box-1 {
+            width: 50%;
+            margin-left: 13%
+            /* background-color: #ff5733; */
+        }
+
+        .sign-box-2 {
+            width: 50%;
+            /* background-color: #ff5733; */
+        }
+
     </style>
 </head>
 
@@ -161,23 +198,23 @@
         <div class="contenedor-hijo caja-2">
             <div style="font-size:1.2em; padding-top: 5px;"><strong>{{ $team?->name }}</strong></div>
             <div>{{ $team?->address }}</div>
+            <h3>Entrega #{{ $delivery->id }}</h3>
         </div>
         <div class="contenedor-hijo caja-3">
             <div>{{ $delivery->created_at->format('d/m/Y') }}</div>
         </div>
     </div>
     <div class="section">
-        <h3>Quien recibe</h3>
         <div><strong>Iglesia:</strong> {{ $church?->name }}</div>
         <div><strong>Pastor:</strong> {{ $church?->pastor_name }}</div>
+        <div><strong>CI:</strong> {{ $church?->identification_number }}</div>
         <div><strong>Dirección:</strong> {{ $church?->address }}</div>
     </div>
     <div class="section">
-        <h3>Recursos entregados</h3>
         <table>
             <thead>
                 <tr>
-                    <th>Recurso</th>
+                    <th>Insumos</th>
                     <th>Cantidad</th>
                 </tr>
             </thead>
@@ -194,11 +231,27 @@
     <br>
     <br>
 
-    <div class="signature">
-        <p>______________________________</p>
-        <p>{{ $church?->name }}</p>
-        <p>Pastor: {{ $church?->pastor_name }}</p>
-        <p>CI: {{ $church?->identification_number }}</p>
+    <div class="sign-box">
+        <div class="single-box sign-box-1">
+            <p>Quien entrega:</p>
+                @if($delivery->signature_deliverer)
+                    <img src="{{ public_path('storage/' . $delivery->signature_deliverer) }}" style="width:150px; height:60px; border:1px solid #ccc;" alt="Firma entregador">
+                @else
+                    <p>______________________________</p>
+                @endif
+                <p style="margin-top:5px;">{{ $delivery->deliverer_name }}</p>
+        </div>
+        <div class="single-box sign-box-2">
+            <p>Firma del receptor:</p>
+                @if($delivery->signature_beneficiary)
+                    <img src="{{ public_path('storage/' . $delivery->signature_beneficiary) }}" style="width:150px; height:60px; border:1px solid #ccc;" alt="Firma beneficiario">
+                @else
+                    <p>______________________________</p>
+                @endif
+                <p>{{ $church?->name }}</p>
+                <p>Pastor: {{ $church?->pastor_name }}</p>
+                <p>CI: {{ $church?->identification_number }}</p>
+        </div>
     </div>
 
     <!-- Footer con número de página -->
