@@ -205,11 +205,20 @@
         </div>
     </div>
     <div class="section">
-        <div><strong>Iglesia:</strong> {{ $church?->name }}</div>
-        <div><strong>Pastor:</strong> {{ $church?->pastor_name }}</div>
-        <div><strong>CI:</strong> {{ $church?->identification_number }}</div>
-        <div><strong>Dirección:</strong> {{ $church?->address }}</div>
+        @if($church)
+            <div><strong>Iglesia:</strong> {{ $church->name }}</div>
+            <div><strong>Pastor:</strong> {{ $church->pastor_name }}</div>
+            <div><strong>CI:</strong> {{ $church->identification_number }}</div>
+            <div><strong>Dirección:</strong> {{ $church->address }}</div>
+        @endif
     </div>
+    @if($delivery->beneficiary)
+    <div class="section">
+        <div><strong>Beneficiario:</strong> {{ $delivery->beneficiary->full_name }}</div>
+        <div><strong>CI:</strong> {{ $delivery->beneficiary->dni }}</div>
+        <div><strong>Dirección:</strong> {{ $delivery->beneficiary->address }}</div>
+    </div>
+    @endif
     <div class="section">
         <table>
             <thead>
@@ -249,9 +258,14 @@
                 @else
                     <p>______________________________</p>
                 @endif
-                <p>{{ $church?->name }}</p>
-                <p>Pastor: {{ $church?->pastor_name }}</p>
-                <p>CI: {{ $church?->identification_number }}</p>
+                @if($church)
+                    <p>{{ $church->name }}</p>
+                    <p>Pastor: {{ $church->pastor_name }}</p>
+                    <p>CI: {{ $church->identification_number }}</p>
+                @elseif($delivery->beneficiary)
+                    <p>{{ $delivery->beneficiary->full_name }}</p>
+                    <p>CI: {{ $delivery->beneficiary->dni }}</p>
+                @endif
         </div>
     </div>
 
