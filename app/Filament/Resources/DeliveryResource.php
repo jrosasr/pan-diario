@@ -98,10 +98,17 @@ class DeliveryResource extends Resource
                     ->hidden(fn ($record) => $record && $record->delivered),
                 // Tables\Actions\ViewAction::make(),
                 Tables\Actions\Action::make('report')
-                    ->label('Reporte de Beneficiarios')
+                    ->label('Reportar de beneficiarios')
                     ->color('primary')
                     ->icon('heroicon-o-document-text')
-                    ->visible(fn ($record) => $record && $record->delivered)
+                    ->visible(fn ($record) => $record && $record->delivered && (
+                        $record->men_seniors_count === null &&
+                        $record->women_seniors_count === null &&
+                        $record->men_count === null &&
+                        $record->women_count === null &&
+                        $record->boys_count === null &&
+                        $record->girls_count === null
+                    ))
                     ->form([
                         Forms\Components\TextInput::make('men_seniors_count')->label('Hombres mayores')->numeric()->required(),
                         Forms\Components\TextInput::make('women_seniors_count')->label('Mujeres mayores')->numeric()->required(),
@@ -131,15 +138,15 @@ class DeliveryResource extends Resource
                             }
                         }
                     }),
-                Tables\Actions\Action::make('pdf')
-                    ->label('Descargar PDF')
-                    ->icon('heroicon-o-document')
-                    ->url(fn ($record) => route('delivery.pdf', $record->id))
-                    ->openUrlInNewTab()
-                    ->visible(fn ($record) => $record->delivered),
+                // Tables\Actions\Action::make('pdf')
+                //     ->label('Descargar PDF')
+                //     ->icon('heroicon-o-document')
+                //     ->url(fn ($record) => route('delivery.pdf', $record->id))
+                //     ->openUrlInNewTab()
+                //     ->visible(fn ($record) => $record->delivered),
                 Tables\Actions\Action::make('view_pdf')
-                    ->label('Ver PDF')
-                    ->icon('heroicon-o-eye')
+                    ->label('Reporte PDF')
+                    ->icon('heroicon-o-document-arrow-down')
                     ->url(fn ($record) => route('delivery.pdf.view', $record->id))
                     ->openUrlInNewTab()
                     ->visible(fn ($record) => $record->delivered),
