@@ -198,13 +198,14 @@
         <div class="contenedor-hijo caja-2">
             <div style="font-size:1.2em; padding-top: 5px;"><strong>{{ $team?->name }}</strong></div>
             <div>{{ $team?->address }}</div>
-            <h3>Entrega #{{ $delivery->id }}</h3>
+            <h3>Nro. {{ $delivery->id }}</h3>
         </div>
         <div class="contenedor-hijo caja-3">
             <div>{{ $delivery->created_at->format('d/m/Y') }}</div>
         </div>
     </div>
     <div class="section">
+        <h2 style="text-align:center; font-size:1.5em; margin-bottom:20px;">Reporte de entrega #{{ $delivery->id }}</h2>
         @if($church)
             <div><strong>Iglesia:</strong> {{ $church->name }}</div>
             <div><strong>Pastor:</strong> {{ $church->pastor_name }}</div>
@@ -269,6 +270,79 @@
         </div>
     </div>
 
+    <!-- Nueva hoja para el reporte de beneficiarios -->
+    <div style="page-break-before: always;"></div>
+    <!-- Header estructurado -->
+    <div class="contenedor-principal">
+        <div class="contenedor-hijo caja-1">
+            @if ($team && $team->logo)
+                @php
+                    $imgPath = $team->logo;
+                    if (str_starts_with($imgPath, 'team/')) {
+                        $imgPath = public_path('storage/' . $imgPath);
+                    } elseif (str_starts_with($imgPath, 'storage/')) {
+                        $imgPath = public_path($imgPath);
+                    } elseif (str_starts_with($imgPath, '/')) {
+                        $imgPath = public_path(ltrim($imgPath, '/'));
+                    } else {
+                        $imgPath = public_path('storage/' . $imgPath);
+                    }
+                @endphp
+                <img src="{{ $imgPath }}" class="team-img" alt="Imagen del equipo">
+            @else
+                <div class="team-img"></div>
+            @endif
+        </div>
+        <div class="contenedor-hijo caja-2">
+            <div style="font-size:1.2em; padding-top: 5px;"><strong>{{ $team?->name }}</strong></div>
+            <div>{{ $team?->address }}</div>
+            <h3>Nro. {{ $delivery->id }}</h3>
+        </div>
+        <div class="contenedor-hijo caja-3">
+            <div>{{ $delivery->created_at->format('d/m/Y') }}</div>
+        </div>
+    </div>
+    <div class="section">
+        <h2 style="text-align:center; font-size:1.5em; margin-bottom:20px;">Beneficiarios de la entrega #{{ $delivery->id }}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Hombres mayores</th>
+                    <th>Mujeres mayores</th>
+                    <th>Hombres</th>
+                    <th>Mujeres</th>
+                    <th>Niños</th>
+                    <th>Niñas</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ $delivery->men_seniors_count }}</td>
+                    <td>{{ $delivery->women_seniors_count }}</td>
+                    <td>{{ $delivery->men_count }}</td>
+                    <td>{{ $delivery->women_count }}</td>
+                    <td>{{ $delivery->boys_count }}</td>
+                    <td>{{ $delivery->girls_count }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+        <h3 style="margin-bottom:10px;">Fotos del reporte</h3>
+        <table style="width:100%; border:none;">
+            <tr>
+            @php $imgCount = 0; @endphp
+            @foreach($delivery->getMedia('images') as $media)
+                <td style="padding:8px; text-align:center; border:none;">
+                    <img src="{{ $media->getPath() }}" style="width:310px; max-height:310px; border:1px solid #ccc; margin-bottom:5px;" alt="Foto reporte">
+                </td>
+                @php $imgCount++; @endphp
+                @if($imgCount % 2 == 0)
+                    </tr><tr>
+                @endif
+            @endforeach
+            </tr>
+        </table>
+    </div>
     <!-- Footer con número de página -->
     <div class="footer">
         <script type="text/php">

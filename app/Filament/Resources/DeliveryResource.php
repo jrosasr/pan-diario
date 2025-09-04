@@ -96,7 +96,41 @@ class DeliveryResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->hidden(fn ($record) => $record && $record->delivered),
-                Tables\Actions\ViewAction::make(),
+                // Tables\Actions\ViewAction::make(),
+                Tables\Actions\Action::make('report')
+                    ->label('Reporte de Beneficiarios')
+                    ->color('primary')
+                    ->icon('heroicon-o-document-text')
+                    ->visible(fn ($record) => $record && $record->delivered)
+                    ->form([
+                        Forms\Components\TextInput::make('men_seniors_count')->label('Hombres mayores')->numeric()->required(),
+                        Forms\Components\TextInput::make('women_seniors_count')->label('Mujeres mayores')->numeric()->required(),
+                        Forms\Components\TextInput::make('men_count')->label('Hombres')->numeric()->required(),
+                        Forms\Components\TextInput::make('women_count')->label('Mujeres')->numeric()->required(),
+                        Forms\Components\TextInput::make('boys_count')->label('Niños')->numeric()->required(),
+                        Forms\Components\TextInput::make('girls_count')->label('Niñas')->numeric()->required(),
+                        Forms\Components\SpatieMediaLibraryFileUpload::make('images')
+                            ->collection('images')
+                            ->multiple()
+                            ->maxFiles(10)
+                            ->label('Fotos del reporte'),
+                    ])
+                    ->action(function ($record, $data) {
+                        $record->update([
+                            'men_seniors_count' => $data['men_seniors_count'],
+                            'women_seniors_count' => $data['women_seniors_count'],
+                            'men_count' => $data['men_count'],
+                            'women_count' => $data['women_count'],
+                            'boys_count' => $data['boys_count'],
+                            'girls_count' => $data['girls_count'],
+                        ]);
+                        if (isset($data['images']) && is_array($data['images'])) {
+                            $record->clearMediaCollection('images');
+                            foreach ($data['images'] as $image) {
+                                $record->addMedia($image)->toMediaCollection('images');
+                            }
+                        }
+                    }),
                 Tables\Actions\Action::make('pdf')
                     ->label('Descargar PDF')
                     ->icon('heroicon-o-document')
@@ -130,6 +164,7 @@ class DeliveryResource extends Resource
             'index' => Pages\ListDeliveries::route('/'),
             'create' => Pages\CreateDelivery::route('/create'),
             'edit' => Pages\EditDelivery::route('/{record}/edit'),
+            'report' => Pages\ReportDelivery::route('/{record}/report'),
         ];
     }
 }

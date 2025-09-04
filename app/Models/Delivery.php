@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Delivery extends Model
+class Delivery extends Model implements HasMedia
 {
+    use InteractsWithMedia;
+
     protected $fillable = [
         'team_id',
         'church_id',
@@ -16,8 +20,19 @@ class Delivery extends Model
         'signature_deliverer',
         'deliverer_name',
         'deliverer_dni',
-        'delivered_at'
+        'delivered_at',
+        'men_seniors_count',
+        'women_seniors_count',
+        'men_count',
+        'women_count',
+        'boys_count',
+        'girls_count'
     ];
+    // Configuración de Media Library para imágenes de entrega
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('images')->useDisk('public');
+    }
 
     public function team()
     {
