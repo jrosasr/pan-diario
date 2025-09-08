@@ -11,6 +11,11 @@ class BeneficiaryDinerTypeOverview extends BaseWidget
 {
     protected static ?int $sort = 1;
 
+    protected ?string $heading = 'Estadisticas por jornadas';
+
+    protected ?string $description = 'Un resumen de los beneficiarios atendidos en cada jornada.';
+
+
     protected function getStats(): array
     {
         // Obtener el equipo (tenant) actual
