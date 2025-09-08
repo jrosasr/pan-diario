@@ -29,6 +29,11 @@ class EditDelivery extends EditRecord
                 ->modalHeading('Firmas de entrega')
                 ->modalSubmitActionLabel('Confirmar y guardar firmas')
                 ->form([
+                    // deliveried_at
+                    \Filament\Forms\Components\DateTimePicker::make('delivered_at')
+                        ->label('Fecha y hora de entrega')
+                        ->default(now())
+                        ->required(),
                     SignaturePad::make('signature_beneficiary')
                         ->label('Firma del beneficiario')
                         ->dotSize(2.0)
@@ -67,7 +72,7 @@ class EditDelivery extends EditRecord
                     }
                     $this->record->update([
                         'delivered' => true,
-                        'delivered_at' => now(),
+                        'delivered_at' => $data['delivered_at'],
                         'signature_beneficiary' => $beneficiaryPath,
                         'signature_deliverer' => $delivererPath,
                         'deliverer_name' => $data['deliverer_name'],
