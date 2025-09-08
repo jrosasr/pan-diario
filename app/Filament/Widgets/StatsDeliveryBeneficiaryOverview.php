@@ -15,19 +15,72 @@ class StatsDeliveryBeneficiaryOverview extends BaseWidget
 
     protected function getStats(): array
     {
+        $data = $this->getStatsPerDelivery();
+
         return [
             Stat::make('Hombres', Delivery::sum('men_count'))
                 ->description('Total de hombres beneficiados')
-                ->icon('heroicon-o-user'),
+                ->icon('heroicon-o-user')
+                ->chart($data['men_count']),
             Stat::make('Mujeres', Delivery::sum('women_count'))
                 ->description('Total de mujeres beneficiadas')
-                ->icon('heroicon-o-user'),
+                ->icon('heroicon-o-user')
+                ->chart($data['women_count']),
             Stat::make('Niños', Delivery::sum('boys_count'))
                 ->description('Total de niños beneficiados')
-                ->icon('heroicon-o-academic-cap'),
+                ->icon('heroicon-o-academic-cap')
+                ->chart($data['boys_count']),
             Stat::make('Niñas', Delivery::sum('girls_count'))
                 ->description('Total de niñas beneficiadas')
-                ->icon('heroicon-o-academic-cap'),
+                ->icon('heroicon-o-academic-cap')
+                ->chart($data['girls_count']),
+            Stat::make('Total', array_sum($data['total_count']))
+                ->description('Total de beneficiarios atendidos')
+                ->icon('heroicon-o-users')
+                ->chart($data['total_count'])
+                ->color('primary'),
+        ];
+    }
+
+    /**
+     * Obtiene el total de beneficiarios por tipo en un rango de fechas.
+     *
+     * @param string|null $from Fecha inicio (Y-m-d) opcional
+     * @param string|null $to   Fecha fin (Y-m-d) opcional
+     * @return array
+     */
+    protected function getStatsPerDelivery(?string $from = null, ?string $to = null): array
+    {
+        $query = Delivery::query();
+        if ($from) {
+            $query->whereDate('delivered_at', '>=', $from);
+        }
+        if ($to) {
+            $query->whereDate('delivered_at', '<=', $to);
+        }
+        // Agrupar por fecha (día)
+        $grouped = $query->selectRaw('
+                DATE(delivered_at) as date,
+                SUM(men_count) as men_count,
+                SUM(women_count) as women_count,
+                SUM(boys_count) as boys_count,
+                SUM(girls_count) as girls_count
+            ')
+            ->groupByRaw('DATE(delivered_at)')
+            ->orderBy('date')
+            ->get();
+
+        // Agrupa por fecha y suma los conteos retornando un valor de array
+        $groupedTotal = $grouped->map(fn($item) =>
+            (int)$item->men_count + (int)$item->women_count + (int)$item->boys_count + (int)$item->girls_count,
+        )->toArray();
+
+        return [
+            'men_count' => $grouped->pluck('men_count')->map(fn($v) => (int)$v)->toArray(),
+            'women_count' => $grouped->pluck('women_count')->map(fn($v) => (int)$v)->toArray(),
+            'boys_count' => $grouped->pluck('boys_count')->map(fn($v) => (int)$v)->toArray(),
+            'girls_count' => $grouped->pluck('girls_count')->map(fn($v) => (int)$v)->toArray(),
+            'total_count' => $groupedTotal,
         ];
     }
 }
