@@ -22,8 +22,6 @@ class ReportDelivery extends Page
     {
         $this->record = Delivery::findOrFail($record);
         $this->form->fill($this->record->only([
-            'men_seniors_count',
-            'women_seniors_count',
             'men_count',
             'women_count',
             'boys_count',
@@ -34,8 +32,6 @@ class ReportDelivery extends Page
     protected function getFormSchema(): array
     {
         return [
-            TextInput::make('men_seniors_count')->label('Hombres mayores')->numeric()->required(),
-            TextInput::make('women_seniors_count')->label('Mujeres mayores')->numeric()->required(),
             TextInput::make('men_count')->label('Hombres')->numeric()->required(),
             TextInput::make('women_count')->label('Mujeres')->numeric()->required(),
             TextInput::make('boys_count')->label('Niños')->numeric()->required(),

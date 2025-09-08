@@ -21,8 +21,6 @@ class Delivery extends Model implements HasMedia
         'deliverer_name',
         'deliverer_dni',
         'delivered_at',
-        'men_seniors_count',
-        'women_seniors_count',
         'men_count',
         'women_count',
         'boys_count',

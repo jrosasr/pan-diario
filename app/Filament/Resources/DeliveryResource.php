@@ -102,16 +102,12 @@ class DeliveryResource extends Resource
                     ->color('primary')
                     ->icon('heroicon-o-document-text')
                     ->visible(fn ($record) => $record && $record->delivered && (
-                        $record->men_seniors_count === 0 &&
-                        $record->women_seniors_count === 0 &&
                         $record->men_count === 0 &&
                         $record->women_count === 0 &&
                         $record->boys_count === 0 &&
                         $record->girls_count === 0
                     ))
                     ->form([
-                        Forms\Components\TextInput::make('men_seniors_count')->label('Hombres mayores')->numeric()->required(),
-                        Forms\Components\TextInput::make('women_seniors_count')->label('Mujeres mayores')->numeric()->required(),
                         Forms\Components\TextInput::make('men_count')->label('Hombres')->numeric()->required(),
                         Forms\Components\TextInput::make('women_count')->label('Mujeres')->numeric()->required(),
                         Forms\Components\TextInput::make('boys_count')->label('Niños')->numeric()->required(),
@@ -124,8 +120,6 @@ class DeliveryResource extends Resource
                     ])
                     ->action(function ($record, $data) {
                         $record->update([
-                            'men_seniors_count' => $data['men_seniors_count'],
-                            'women_seniors_count' => $data['women_seniors_count'],
                             'men_count' => $data['men_count'],
                             'women_count' => $data['women_count'],
                             'boys_count' => $data['boys_count'],
