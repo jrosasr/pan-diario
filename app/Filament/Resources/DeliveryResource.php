@@ -76,6 +76,7 @@ class DeliveryResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')->label('Nro')->sortable(),
                 Tables\Columns\TextColumn::make('church.name')->label('Iglesia')->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Fecha de creación')
