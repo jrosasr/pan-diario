@@ -78,10 +78,10 @@ class DeliveryResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('id')->label('Nro')->sortable(),
                 Tables\Columns\TextColumn::make('church.name')->label('Iglesia')->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Fecha de creación')
-                    ->dateTime('d/m/Y')
-                    ->sortable(),
+                // Tables\Columns\TextColumn::make('created_at')
+                //     ->label('Fecha de creación')
+                //     ->dateTime('d/m/Y')
+                //     ->sortable(),
                 Tables\Columns\TextColumn::make('delivered_at')
                     ->label('Fecha de entrega')
                     ->dateTime('d/m/Y H:i')
