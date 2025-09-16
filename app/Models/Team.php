@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -10,6 +9,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Team extends Model
 {
     protected $guarded = [];
+
+    public function professionals(): HasMany
+    {
+        return $this->hasMany(Professional::class);
+    }
+
+    public function specializations(): HasMany
+    {
+        return $this->hasMany(Specialization::class);
+    }
 
     /**
      * The members that belong to the Team
