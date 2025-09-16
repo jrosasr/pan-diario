@@ -19,6 +19,10 @@ class ProfessionalResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'Recursos Humanos';
+    protected static ?string $modelLabel = 'Profesional';
+    protected static ?string $pluralModelLabel = 'Profesionales';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -40,20 +44,32 @@ class ProfessionalResource extends Resource
                 Forms\Components\TextInput::make('address')
                     ->label('Dirección')
                     ->maxLength(255),
-                Forms\Components\Select::make('specialties')
-                    ->label('Especialidades')
+                Forms\Components\Select::make('professions')
+                    ->label('Profesiones')
                     ->multiple()
-                    ->relationship('specialties', 'name')
+                    ->relationship('professions', 'name')
                     ->preload()
+                    ->searchable(),
+                Forms\Components\Select::make('specialties')
+                    ->label('Especializaciones')
+                    ->multiple()
+                    ->options(function (callable $get) {
+                        $professionIds = $get('professions') ?? [];
+                        if (empty($professionIds)) {
+                            return [];
+                        }
+                        $specializations = collect();
+                        foreach ($professionIds as $professionId) {
+                            $profession = \App\Models\Profession::with('specializations')->find($professionId);
+                            if ($profession) {
+                                $specializations = $specializations->merge($profession->specializations);
+                            }
+                        }
+                        return $specializations->unique('id')->pluck('name', 'id')->toArray();
+                    })
                     ->searchable()
-                    ->createOptionForm([
-                        Forms\Components\TextInput::make('name')
-                            ->label('Nueva especialidad')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\Hidden::make('team_id')
-                            ->default(fn () => auth()->user()->currentTeam->id),
-                    ]),
+                    ->preload()
+                    ->reactive(),
             ]);
     }
 

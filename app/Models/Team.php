@@ -90,4 +90,9 @@ class Team extends Model
     {
         return $this->hasMany(Delivery::class);
     }
+
+    public function professions(): HasMany
+    {
+        return $this->hasMany(Profession::class);
+    }
 }

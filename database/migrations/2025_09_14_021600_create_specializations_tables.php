@@ -24,6 +24,13 @@ return new class extends Migration
             $table->foreignId('specialization_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
+
+        Schema::create('profession_specialization', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('profession_id')->constrained()->onDelete('cascade');
+            $table->foreignId('specialization_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
+        });
     }
 
     /**
