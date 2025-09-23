@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('professional_service', function (Blueprint $table) {
+        Schema::create('professional_service', function (Blueprint $table) {
             $table->foreignId('service_id')->constrained()->onDelete('cascade');
             $table->foreignId('professional_id')->constrained()->onDelete('cascade');
             $table->integer('limit')->default(1)->comment('Número máximo de veces que un profesional puede ofrecer este servicio');
