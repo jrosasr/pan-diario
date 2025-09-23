@@ -5,6 +5,7 @@ namespace App\Filament\Widgets;
 use App\Models\Delivery;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
+use Filament\Facades\Filament;
 
 class StatsDeliveryBeneficiaryOverview extends BaseWidget
 {
@@ -15,22 +16,25 @@ class StatsDeliveryBeneficiaryOverview extends BaseWidget
 
     protected function getStats(): array
     {
+        // Obtiene el ID del equipo (tenant) actual utilizando Filament.
+        $teamId = Filament::getTenant()->id;
+
         $data = $this->getStatsPerDelivery();
 
         return [
-            Stat::make('Hombres', Delivery::sum('men_count'))
+            Stat::make('Hombres', Delivery::where('team_id', $teamId)->sum('men_count'))
                 ->description('Total de hombres beneficiados')
                 ->icon('heroicon-o-user')
                 ->chart($data['men_count']),
-            Stat::make('Mujeres', Delivery::sum('women_count'))
+            Stat::make('Mujeres', Delivery::where('team_id', $teamId)->sum('women_count'))
                 ->description('Total de mujeres beneficiadas')
                 ->icon('heroicon-o-user')
                 ->chart($data['women_count']),
-            Stat::make('Niños', Delivery::sum('boys_count'))
+            Stat::make('Niños', Delivery::where('team_id', $teamId)->sum('boys_count'))
                 ->description('Total de niños beneficiados')
                 ->icon('heroicon-o-academic-cap')
                 ->chart($data['boys_count']),
-            Stat::make('Niñas', Delivery::sum('girls_count'))
+            Stat::make('Niñas', Delivery::where('team_id', $teamId)->sum('girls_count'))
                 ->description('Total de niñas beneficiadas')
                 ->icon('heroicon-o-academic-cap')
                 ->chart($data['girls_count']),
@@ -51,7 +55,10 @@ class StatsDeliveryBeneficiaryOverview extends BaseWidget
      */
     protected function getStatsPerDelivery(?string $from = null, ?string $to = null): array
     {
-        $query = Delivery::query();
+        // Obtiene el ID del equipo (tenant) actual y lo agrega a la consulta.
+        $teamId = Filament::getTenant()->id;
+        $query = Delivery::query()->where('team_id', $teamId);
+
         if ($from) {
             $query->whereDate('delivered_at', '>=', $from);
         }
