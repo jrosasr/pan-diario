@@ -19,6 +19,10 @@ class SpecializationResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'Recursos Humanos';
+    protected static ?string $modelLabel = 'Especialización';
+    protected static ?string $pluralModelLabel = 'Especializaciones';
+
     public static function form(Form $form): Form
     {
         return $form

@@ -25,6 +25,16 @@ class Professional extends Model
         return $this->hasMany(ProfessionalSpecialization::class);
     }
 
+    public function professions()
+    {
+        return $this->hasMany(Profession::class);
+    }
+
+    public function professionalServices()
+    {
+        return $this->hasMany(ProfessionalService::class);
+    }
+
     public function team()
     {
         return $this->belongsTo(Team::class);
