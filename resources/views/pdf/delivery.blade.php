@@ -325,18 +325,20 @@
             </tbody>
         </table>
         <br>
-        @if ($delivery->images > 0)
+        @if (!empty($delivery->media))
             <h3 style="margin-bottom:10px;">Fotos del reporte</h3>
             <table style="width:100%; border:none;">
                 <tr>
                 @php $imgCount = 0; @endphp
-                @foreach($delivery->getMedia('images') as $media)
-                    <td style="padding:8px; text-align:center; border:none;">
-                        <img src="{{ $media->getPath() }}" style="width:310px; max-height:310px; border:1px solid #ccc; margin-bottom:5px;" alt="Foto reporte">
-                    </td>
-                    @php $imgCount++; @endphp
-                    @if($imgCount % 2 == 0)
-                        </tr><tr>
+                @foreach($delivery->media as $media)
+                    @if(isset($media['collection_name']) && $media['collection_name'] === 'images')
+                        <td style="padding:8px; text-align:center; border:none;">
+                            <img src="{{ public_path('storage/' . $media['id'] . '/' . $media['file_name']) }}" style="width:310px; max-height:310px; border:1px solid #ccc; margin-bottom:5px;" alt="Foto reporte">
+                        </td>
+                        @php $imgCount++; @endphp
+                        @if($imgCount % 2 == 0)
+                            </tr><tr>
+                        @endif
                     @endif
                 @endforeach
                 </tr>
