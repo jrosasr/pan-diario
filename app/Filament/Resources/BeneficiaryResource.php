@@ -55,10 +55,12 @@ class BeneficiaryResource extends Resource
     protected static ?string $pluralModelLabel = 'Beneficiarios';
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationGroup = 'Jornadas de alimentación';
-    protected static ?int $navigationSort = 2;
-
     protected static ?string $tenantRelationshipName = 'beneficiaries';
+    protected static ?int $navigationSort = 4;
+
+
+    protected static ?string $navigationGroup = 'Mayordomía';
+
 
     public static function form(Form $form): Form
     {

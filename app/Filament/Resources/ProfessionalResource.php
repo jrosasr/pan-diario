@@ -19,9 +19,11 @@ class ProfessionalResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Recursos Humanos';
-    protected static ?string $modelLabel = 'Profesional';
-    protected static ?string $pluralModelLabel = 'Profesionales';
+    protected static ?string $navigationGroup = 'Voluntariado';
+    protected static ?string $modelLabel = 'Voluntario';
+    protected static ?string $pluralModelLabel = 'Voluntarios';
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
