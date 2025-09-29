@@ -95,4 +95,9 @@ class Team extends Model
     {
         return $this->hasMany(Profession::class);
     }
+
+    public function prayerRequests(): HasMany
+    {
+        return $this->hasMany(PrayerRequest::class);
+    }
 }
