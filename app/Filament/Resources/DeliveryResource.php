@@ -11,8 +11,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class DeliveryResource extends Resource
 {
@@ -148,7 +148,13 @@ class DeliveryResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->action(function (Collection $records) {
+                            DB::transaction(function () use ($records) {
+                                $records->each(fn (Delivery $delivery) => static::restockResources($delivery));
+                                $records->each->delete();
+                            });
+                        }),
                 ]),
             ]);
     }
@@ -168,5 +174,20 @@ class DeliveryResource extends Resource
             'edit' => Pages\EditDelivery::route('/{record}/edit'),
             'report' => Pages\ReportDelivery::route('/{record}/report'),
         ];
+    }
+
+    public static function restockResources(Delivery $delivery): void
+    {
+        $delivery->loadMissing(['deliveryResources.resource']);
+
+        foreach ($delivery->deliveryResources as $deliveryResource) {
+            $resource = $deliveryResource->resource;
+
+            if (! $resource) {
+                continue;
+            }
+
+            $resource->increment('quantity', $deliveryResource->quantity);
+        }
     }
 }

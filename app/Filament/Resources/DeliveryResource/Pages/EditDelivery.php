@@ -9,6 +9,7 @@ use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\DeliveryResource;
 use Saade\FilamentAutograph\Forms\Components\SignaturePad;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class EditDelivery extends EditRecord
 {
@@ -16,14 +17,10 @@ class EditDelivery extends EditRecord
 
     protected function getHeaderActions(): array
     {
-        if ($this->record->delivered) {
-            return [
-                // Actions\DeleteAction::make(),
-            ];
-        }
+        $actions = [];
 
-        return [
-            Action::make('Confirmar Entrega')
+        if (! $this->record->delivered) {
+            $actions[] = Action::make('Confirmar Entrega')
                 ->icon('heroicon-o-check-circle')
                 ->color('success')
                 ->modalHeading('Firmas de entrega')
@@ -62,11 +59,11 @@ class EditDelivery extends EditRecord
                 ->action(function (array $data) {
                     $beneficiaryPath = null;
                     $delivererPath = null;
-                    if (!empty($data['signature_beneficiary'])) {
+                    if (! empty($data['signature_beneficiary'])) {
                         $beneficiaryPath = 'signatures/beneficiary_' . $this->record->id . '_' . time() . '.png';
                         Storage::disk('public')->put($beneficiaryPath, base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $data['signature_beneficiary'])));
                     }
-                    if (!empty($data['signature_deliverer'])) {
+                    if (! empty($data['signature_deliverer'])) {
                         $delivererPath = 'signatures/deliverer_' . $this->record->id . '_' . time() . '.png';
                         Storage::disk('public')->put($delivererPath, base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $data['signature_deliverer'])));
                     }
@@ -85,9 +82,29 @@ class EditDelivery extends EditRecord
                         ->send();
 
                     return $this->getResource()::getUrl('edit', ['record' => $this->record->getKey()]);
-                }),
-            // Actions\DeleteAction::make(),
-        ];
+                });
+        }
+
+        $actions[] = Actions\DeleteAction::make('delete_restock')
+            ->label('Eliminar y reponer recursos')
+            ->requiresConfirmation()
+            ->modalHeading('Eliminar entrega')
+            ->modalSubmitActionLabel('Sí, eliminar')
+            ->action(function () {
+                DB::transaction(function () {
+                    DeliveryResource::restockResources($this->record);
+                    $this->record->delete();
+                });
+
+                Notification::make()
+                    ->title('Entrega eliminada y recursos restablecidos')
+                    ->success()
+                    ->send();
+
+                return redirect($this->getResource()::getUrl());
+            });
+
+        return $actions;
     }
 
     protected array $originalDeliveryResources = [];
