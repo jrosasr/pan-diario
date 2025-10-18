@@ -26,6 +26,12 @@ class Delivery extends Model implements HasMedia
         'boys_count',
         'girls_count'
     ];
+
+    protected $casts = [
+        'delivered' => 'boolean',
+        'delivered_at' => 'datetime',
+    ];
+
     // Configuración de Media Library para imágenes de entrega
     public function registerMediaCollections(): void
     {
